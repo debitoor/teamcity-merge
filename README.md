@@ -26,7 +26,7 @@ This will kick off the TC build that tries to merge the branch to master, checki
 You need to configure a build for picking up pushes to `ready/*` branches, that merges them, runs tests and closes the associated pull request.
 
 ## General Settings
-`Limit the number of simultaneously running builds (0 — unlimited)`: Set this to `1`. This effectivly creates an automate queue, making sure only one merge is done to master at a time.
+`Limit the number of simultaneously running builds (0 — unlimited)`: Set this to `1`. This effectivly creates an automated queue, making sure only one merge is done to master at a time.
 
 ## Version Control Settings
 `VCS checkout mode`: Set this to `Automatically on agent (if supported by VCS root)`. We will be doing git commands in the build, so we want the git repo on the TC agent.
@@ -45,3 +45,13 @@ You need to configure a build for picking up pushes to `ready/*` branches, that 
 3. The next build step you add should be a Command Line build step. We will call it `Push changes to master`. And it will contail a single line: `git push origin master`.
 4. This next build step could be push to production, if you are running Continuous Release. This step is optional.
 5. The final step should be a Command Line build step. We will call it `Delete ready branch (Always run)`. You should set this step to always run, even if the previous steps failed. It will contain a single line: `git push origin :ready/%env.branch%`. 
+
+## Parameters
+You should add a parameter to the build
+
+`Name`: `env.branch`
+
+`Kind`: `Environment variable (env.)`
+
+`Value`: `%teamcity.build.branch%`
+
