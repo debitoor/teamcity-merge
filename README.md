@@ -27,7 +27,7 @@ NOTE: We wrote a commmand line tool that helps you, and makes things even easier
 
 
 # How to set up the TC build that merges to master and closes the associated pull request
-You need to configure a build for picking up pushes to `ready/*` branches, that merges them, runs tests and closes the associated pull request.
+You need to configure a build for picking up pushes to `ready/*` branches, that merges them, runs tests and closes the associated pull request. The following sections describes the setting you need on your merge-TC build.
 
 ## General Settings
 `Limit the number of simultaneously running builds (0 — unlimited)`: Set this to `1`. This effectivly creates an automated queue, making sure only one merge is done to master at a time.
@@ -36,9 +36,11 @@ You need to configure a build for picking up pushes to `ready/*` branches, that 
 `VCS checkout mode`: Set this to `Automatically on agent (if supported by VCS root)`. We will be doing git commands in the build, so we want the git repo on the TC agent.
 
 ### VCS Roots -> Edit
+
+`Default branch`: Set this to `master`
+
 `Branch specification`: To pick up pushes to `ready/*` branches we set this to:
 ```
--:master
 +:refs/heads/ready/*
 ```
 
@@ -49,6 +51,13 @@ You need to configure a build for picking up pushes to `ready/*` branches, that 
 3. The next build step you add should be a Command Line build step. We will call it `Push changes to master`. And it will contail a single line: `git push origin master`.
 4. This next build step could be push to production, if you are running Continuous Release. This step is optional.
 5. The final step should be a Command Line build step. We will call it `Delete ready branch (Always run)`. You should set this step to always run, even if the previous steps failed. It will contain a single line: `git push origin :ready/%env.branch%`. 
+
+## Triggers -> Add new trigger rule
+`Branch filter`: We do not want to trigger the build on commits to master, so we set this to:
+```
++:*
+-:<default>
+```
 
 ## Parameters
 You should add a parameter to the build
