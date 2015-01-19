@@ -1,4 +1,4 @@
-# TeamCityScript
+# teamcity-merge
 Script for TeamCity - Lets TeamCity handle merging to master and closing github pull request
 
 # What is this for?
