@@ -50,7 +50,7 @@ You need to configure a build for picking up pushes to `ready/*` branches, that 
 2. The next build steps should run all your tests and verifications you want to run on your codebase. You normal master build.
 3. The next build step you add should be a Command Line build step. We will call it `Push changes to master`. And it will contail a single line: `git push origin master`.
 4. This next build step could be push to production, if you are running Continuous Release. This step is optional.
-5. The final step should be a Command Line build step. We will call it `Delete ready branch (Always run)`. You should set this step to always run, even if the previous steps failed. It will contain a single line: `git push origin :ready/%env.branch%`. 
+5. The final step should be a Command Line build step. We will call it `Delete ready branch (Always run)`. You should set this step to always run, even if the previous steps failed. It will contain a single line: `git push origin ":ready/%env.branch%"`. 
 
 ## Triggers -> Add new trigger rule
 `Branch filter`: We do not want to trigger the build on commits to master, so we set this to:
