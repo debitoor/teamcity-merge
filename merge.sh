@@ -18,7 +18,7 @@ then
 else
 	echo 'Fetch of pull request already in place in .git/config'
 fi
-git fetch
+git fetch --prune
 
 ########################################################################################
 # Lookup PR number
@@ -34,6 +34,9 @@ echo "\nFinding pull request that matches branch we want to merge (current branc
 CURRENT_SHA=`git log -1 --format="%H"`
 echo "Current SHA:"
 echo "${CURRENT_SHA}"
+
+LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
+echo "This will be the author of the merge commit in master: ${LAST_COMMIT_AUTHOR} (the last commit in branch was done by this person)"
 
 error='\nDid you try to deploy a branch that is not a pull request?\nOr did you forget to push your changes to github?'
 
@@ -77,7 +80,7 @@ git merge --squash "origin/ready/${branch}"
 branchWithUnderscore2Spaces=`echo "${branch}" | sed -e 's/_/ /g'`
 message="fixes #${PR_NUMBER} - ${branchWithUnderscore2Spaces}"
 echo "Committing squashed merge with message: ${message}"
-git commit -m "${message}"
+git commit -m "${message}" --author "${LAST_COMMIT_AUTHOR}"
 
 ################################################################
 # After you have run this as a commandline build step on TC
