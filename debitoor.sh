@@ -5,6 +5,14 @@ then
     exit 0
 fi
 
+step="\n\n-----------------NEXT STEP-------------------------\n"
+
+delete_ready_branch (){
+	echo "${step}Deleting ready branch on github"
+	git push origin ":ready/%env.branch%"
+	exit $1
+}
+
 ################################################
 # Make sure git fetches (hidden) Pull Requests
 # by adding:
@@ -12,7 +20,7 @@ fi
 # to .git/config under the origin remote
 ################################################
 
-echo "\nAdding fetch of pull requests to .git/config"
+echo "${step}Adding fetch of pull requests to .git/config"
 
 CURRENT_FETCH=`grep '	fetch =.\+refs/pull/\*/head:refs/remotes/origin/pullrequest/\*' .git/config`
 if [ "$CURRENT_FETCH" = '' ]
@@ -24,7 +32,7 @@ then
 else
 	echo 'Fetch of pull request already in place in .git/config'
 fi
-git fetch --prune || exit $?
+git fetch --prune || delete_ready_branch $?
 
 ########################################################################################
 # Lookup PR number
@@ -35,7 +43,7 @@ git fetch --prune || exit $?
 # by making the squash merge commit message include "fixes #[pull request number] ..."
 ########################################################################################
 
-echo "\nFinding pull request that matches branch we want to merge (current branch)"
+echo "${step}Finding pull request that matches branch we want to merge (current branch)"
 
 CURRENT_SHA=`git log -1 --format="%H"`
 echo "Current SHA:"
@@ -48,7 +56,7 @@ error='\nDid you try to deploy a branch that is not a pull request?\nOr did you 
 
 MATCHING_PULL_REQUEST=`git show-ref | grep $CURRENT_SHA | grep 'refs/remotes/origin/pullrequest/'`
 if [ "$MATCHING_PULL_REQUEST" = '' ] ; then
-  echo "Error finding matching pull request: ${error}" >&2; exit 1
+  echo "Error finding matching pull request: ${error}" >&2; delete_ready_branch 1
 fi
 echo "Matching pull request:"
 echo "${MATCHING_PULL_REQUEST}"
@@ -57,7 +65,7 @@ PR_NUMBER=`echo "${MATCHING_PULL_REQUEST}" | sed 's/[0-9a-z]* refs\/remotes\/ori
 echo "Extracted pull request number:"
 echo "${PR_NUMBER}"
 case ${PR_NUMBER} in
-    ''|*[!0-9]*) echo "Error pull request number does not match number regExp (weird!): ${error}" >&2; exit 1 ;;
+    ''|*[!0-9]*) echo "Error pull request number does not match number regExp (weird!): ${error}" >&2; delete_ready_branch 1 ;;
     *) echo "Success. Pull request number passes regExp test for number. Exporting PR_NUMBER=${PR_NUMBER}" ;;
 esac
 
@@ -67,38 +75,42 @@ esac
 # And pull master
 #####################################################################
 
-echo "\nChecking out, resetting (hard) and pulling master branch"
+echo "${step}Checking out, resetting (hard) and pulling master branch"
 
-git checkout master || exit $?
-git reset --hard origin/master || exit $?
-git pull || exit $?
+git checkout master || delete_ready_branch $?
+git reset --hard origin/master || delete_ready_branch $?
+git pull || delete_ready_branch $?
 
 ################################################
 # Merge into master
 # You will want to use you own email here
 ################################################
 
-echo "\nMerging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
+echo "${step}Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
-git config user.email "teamcityagent@e-conomic.com" || exit $?
-git config user.name "Teamcity" || exit $?
-git merge --squash "origin/ready/${branch}" || exit $?
+git config user.email "teamcityagent@e-conomic.com" || delete_ready_branch $?
+git config user.name "Teamcity" || delete_ready_branch $?
+git merge --squash "origin/ready/${branch}" || delete_ready_branch $?
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 commitMessage="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
 echo "Committing squashed merge with message: \"${message}\""
-git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || exit $?
+git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || delete_ready_branch $?
 
 ################################################
 # Run tests
 ################################################
 
-npm run teamcity || exit $?
+echo "${step}Running tests"
+
+npm run teamcity || delete_ready_branch $?
 
 ################################################
 # Push changes to github
 ################################################
 
-git push origin master || exit $?
+echo "${step}Pushing changes to github"
+
+git push origin master || delete_ready_branch $?
 
 ################################################
 # Deploy to production
@@ -108,9 +120,10 @@ git push origin master || exit $?
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 if [ "$1" = 'deploy' ]
 then
-	hms deploy production-services "${project}" --no-log --retry || exit $?
+	echo "${step}Deploying to production"
+	hms deploy production-services "${project}" --no-log --retry || delete_ready_branch $?
 else
-	echo "No deploy - to deploy with hms, please pass 'deploy' parameter to this script:"
+	echo "${step}No deploy - to deploy with hms, please pass 'deploy' parameter to this script:"
 	echo "cat debitoor.sh | sh -s deploy"
 fi
 
@@ -118,6 +131,14 @@ fi
 # Add git tag and push to github
 ################################################
 
+echo "${step}Adding git tag and pushing to github"
+
 datetime=`date +%Y-%m-%d-%H-%M-%S`
-git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || exit $?
-git push origin --tags || exit $?
+git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || delete_ready_branch $?
+git push origin --tags || delete_ready_branch $?
+
+################################################
+# Delete the ready branch
+################################################
+
+delete_ready_branch
