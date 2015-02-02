@@ -9,7 +9,7 @@ step="\n\n-----------------NEXT STEP-------------------------\n"
 
 delete_ready_branch (){
 	echo "${step}Deleting ready branch on github"
-	git push origin ":ready/%env.branch%"
+	git push origin ":ready/${branch}"
 	exit $1
 }
 
