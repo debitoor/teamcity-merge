@@ -102,11 +102,17 @@ git push origin master || exit $?
 
 ################################################
 # Deploy to production
+# You
 ################################################
 
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-
-hms deploy production-services "${project}" --no-log --retry || exit $?
+if [ "$1" = 'deploy' ]
+then
+	hms deploy production-services "${project}" --no-log --retry || exit $?
+else
+	echo "No deploy - to deploy with hms, please pass 'deploy' parameter to this script:"
+	echo "cat debitoor.sh | sh -s deploy"
+fi
 
 ################################################
 # Add git tag and push to github
