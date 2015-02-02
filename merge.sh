@@ -18,7 +18,7 @@ then
 else
 	echo 'Fetch of pull request already in place in .git/config'
 fi
-git fetch --prune
+git fetch --prune || exit $
 
 ########################################################################################
 # Lookup PR number
@@ -63,9 +63,9 @@ esac
 
 echo "\nChecking out, resetting (hard) and pulling master branch"
 
-git checkout master
-git reset --hard origin/master
-git pull
+git checkout master || exit $
+git reset --hard origin/master || exit $
+git pull || exit $
 
 ################################################
 # Merge into master
@@ -74,13 +74,13 @@ git pull
 
 echo "\nMerging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
-git config user.email "teamcityagent@e-conomic.com"
-git config user.name "Teamcity"
-git merge --squash "origin/ready/${branch}"
+git config user.email "teamcityagent@e-conomic.com" || exit $
+git config user.name "Teamcity" || exit $
+git merge --squash "origin/ready/${branch}" || exit $
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 message="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
 echo "Committing squashed merge with message: \"${message}\""
-git commit -m "${message}" --author "${LAST_COMMIT_AUTHOR}"
+git commit -m "${message}" --author "${LAST_COMMIT_AUTHOR}" || exit $
 
 ################################################################
 # After you have run this as a commandline build step on TC
