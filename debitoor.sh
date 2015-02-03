@@ -131,7 +131,6 @@ git push origin master || delete_ready_branch $?
 
 ################################################
 # Deploy to production
-# You
 ################################################
 
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
