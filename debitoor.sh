@@ -8,7 +8,7 @@ fi
 ### Step helper functions
 stepName=""
 step_end(){
-	echo "##teamcity[blockClosed '${stepName}']"
+	echo "##teamcity[blockClosed name='${stepName}']"
 }
 step_start(){
 	if [ "${stepName}" != '' ]
@@ -16,7 +16,7 @@ step_start(){
 		step_end
 	fi
 	stepName=$1
-	echo "##teamcity[blockOpened '${stepName}']"
+	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
 
