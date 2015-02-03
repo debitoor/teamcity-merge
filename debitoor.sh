@@ -15,7 +15,7 @@ step_start(){
 	then
 		step_end
 	fi
-	stepName=`echo "------ $1 ------"`
+	stepName=`echo "-- $1 --"`
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
@@ -60,7 +60,7 @@ git fetch --prune || delete_ready_branch $?
 # by making the squash merge commit message include "fixes #[pull request number] ..."
 ########################################################################################
 
-step_start "Finding pull request that matches branch we want to merge (current branch)"
+step_start "Finding pull request that matches current branch"
 
 CURRENT_SHA=`git log -1 --format="%H"`
 echo "Current SHA:"
@@ -122,7 +122,7 @@ git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_
 # Run tests
 ################################################
 
-step_start "Running tests with >npm run teamcity"
+step_start "Running tests with >npm run teamcity --silent"
 
 npm run teamcity --silent || delete_ready_branch $?
 
