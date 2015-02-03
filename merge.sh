@@ -79,7 +79,7 @@ message_on_commit_error(){
 
 echo "\nMerging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
-git config user.email "teamcityagent@e-conomic.com" || exit $?
+git config user.email "teamcity@e-conomic.com" || exit $?
 git config user.name "Teamcity" || exit $?
 git merge --squash "origin/ready/${branch}" || exit $?
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`

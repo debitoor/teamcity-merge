@@ -110,7 +110,7 @@ message_on_commit_error(){
 	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and continuing'
 }
 
-git config user.email "teamcityagent@e-conomic.com" || delete_ready_branch $?
+git config user.email "teamcity@e-conomic.com" || delete_ready_branch $?
 git config user.name "Teamcity" || delete_ready_branch $?
 git merge --squash "origin/ready/${branch}" || delete_ready_branch $?
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
