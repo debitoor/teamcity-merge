@@ -15,7 +15,7 @@ step_start(){
 	then
 		step_end
 	fi
-	stepName=$1
+	stepName=`echo "---------------- $1 ----------------"`
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
@@ -134,26 +134,33 @@ git push origin master || delete_ready_branch $?
 # You
 ################################################
 
-step_start "Deploying to production"
-
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 if [ "$1" = 'deploy' ]
 then
+	step_start "Deploying to production"
 	hms deploy production-services "${project}" --no-log --retry || delete_ready_branch $?
 else
+	step_start "Skipping deploy to production"
 	echo "No deploy - to deploy with hms, please pass \"deploy\" parameter to this script:"
 	echo "cat debitoor.sh | sh -s deploy"
 fi
 
 ################################################
-# Add git tag and push to github
+# Add git tag a nd push to github
 ################################################
-
-step_start "Adding git tag and pushing to github"
-
-datetime=`date +%Y-%m-%d-%H-%M-%S`
-git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || delete_ready_branch $?
-git push origin --tags || delete_ready_branch $?
+if [ "$1" = 'deploy' ]
+then
+	step_start "Adding git tag and pushing to github"
+	if [ "$1" = 'deploy' ]
+	then
+	datetime=`date +%Y-%m-%d-%H-%M-%S`
+	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || delete_ready_branch $?
+	git push origin --tags || delete_ready_branch $?
+else
+	step_start "Skipping adding git tag"
+	echo "No deploy - to deploy with hms, please pass \"deploy\" parameter to this script:"
+	echo "cat debitoor.sh | sh -s deploy"
+fi
 
 ################################################
 # Delete the ready branch
