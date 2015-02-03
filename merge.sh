@@ -72,6 +72,10 @@ git pull || exit $?
 # You will want to use you own email here
 ################################################
 
+message_on_commit_error(){
+	echo 'Commiting changes returned an error (status $1). We are assuming that this is due to no changes, and continuing'
+}
+
 echo "\nMerging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
 git config user.email "teamcityagent@e-conomic.com" || exit $?
@@ -80,7 +84,7 @@ git merge --squash "origin/ready/${branch}" || exit $?
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 message="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
 echo "Committing squashed merge with message: \"${message}\""
-git commit -m "${message}" --author "${LAST_COMMIT_AUTHOR}" || exit $?
+git commit -m "${message}" --author "${LAST_COMMIT_AUTHOR}" || message_on_commit_error $?
 
 ################################################################
 # After you have run this as a commandline build step on TC
