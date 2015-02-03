@@ -125,7 +125,7 @@ npm run teamcity || delete_ready_branch $?
 # Push changes to github
 ################################################
 
-step_start "Pushing changes to github"
+step_start "Pushing changes to github master branch"
 
 git push origin master || delete_ready_branch $?
 
