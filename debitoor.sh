@@ -15,7 +15,7 @@ step_start(){
 	then
 		step_end
 	fi
-	stepName=`echo "---------------- $1 ----------------"`
+	stepName=`echo "------ $1 ------"`
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
