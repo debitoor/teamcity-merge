@@ -8,15 +8,15 @@ fi
 ### Step helper functions
 stepName=""
 step_end(){
-	echo "##teamcity[progressFinish '${stepName}']"
+	echo "##teamcity[blockClosed '${stepName}']"
 }
 step_start(){
 	if [ "${stepName}" != '' ]
 	then
 		step_end
 	fi
-	stepName=`echo "${1}" | sed -e 's/ /_/g'`
-	echo "##teamcity[progressStart '${stepName}']"
+	stepName=$1
+	echo "##teamcity[blockOpened '${stepName}']"
 }
 
 
