@@ -5,13 +5,30 @@ then
     exit 0
 fi
 
-step="\n\n-----------------NEXT STEP-------------------------\n"
+### Step helper functions
+stepName=""
+step_end(){
+	echo "##teamcity[progressFinish '${stepName}']"
+}
+step_start(){
+	if [ "${stepName}" != '' ]
+	then
+		step_end
+	fi
+	stepName=$1
+	echo "##teamcity[progressStart '${stepName}']"
+}
 
+
+# Always last thing done before exit
 delete_ready_branch (){
-	echo "${step}Deleting ready branch on github"
+	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
+	step_end
 	exit $1
 }
+
+
 
 ################################################
 # Make sure git fetches (hidden) Pull Requests
@@ -20,7 +37,7 @@ delete_ready_branch (){
 # to .git/config under the origin remote
 ################################################
 
-echo "${step}Adding fetch of pull requests to .git/config"
+step_start "Adding fetch of pull requests to .git/config"
 
 CURRENT_FETCH=`grep '	fetch =.\+refs/pull/\*/head:refs/remotes/origin/pullrequest/\*' .git/config`
 if [ "$CURRENT_FETCH" = '' ]
@@ -43,7 +60,7 @@ git fetch --prune || delete_ready_branch $?
 # by making the squash merge commit message include "fixes #[pull request number] ..."
 ########################################################################################
 
-echo "${step}Finding pull request that matches branch we want to merge (current branch)"
+step_start "Finding pull request that matches branch we want to merge (current branch)"
 
 CURRENT_SHA=`git log -1 --format="%H"`
 echo "Current SHA:"
@@ -75,7 +92,7 @@ esac
 # And pull master
 #####################################################################
 
-echo "${step}Checking out, resetting (hard) and pulling master branch"
+step_start "Checking out, resetting (hard) and pulling master branch"
 
 git checkout master || delete_ready_branch $?
 git reset --hard origin/master || delete_ready_branch $?
@@ -86,7 +103,7 @@ git pull || delete_ready_branch $?
 # You will want to use you own email here
 ################################################
 
-echo "${step}Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
+step_start "Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
 git config user.email "teamcityagent@e-conomic.com" || delete_ready_branch $?
 git config user.name "Teamcity" || delete_ready_branch $?
@@ -100,7 +117,7 @@ git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || delete_read
 # Run tests
 ################################################
 
-echo "${step}Running tests"
+step_start "Running tests with >npm run teamcity"
 
 npm run teamcity || delete_ready_branch $?
 
@@ -108,7 +125,7 @@ npm run teamcity || delete_ready_branch $?
 # Push changes to github
 ################################################
 
-echo "${step}Pushing changes to github"
+step_start "Pushing changes to github"
 
 git push origin master || delete_ready_branch $?
 
@@ -120,10 +137,10 @@ git push origin master || delete_ready_branch $?
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 if [ "$1" = 'deploy' ]
 then
-	echo "${step}Deploying to production"
+	step_start "Deploying to production"
 	hms deploy production-services "${project}" --no-log --retry || delete_ready_branch $?
 else
-	echo "${step}No deploy - to deploy with hms, please pass 'deploy' parameter to this script:"
+	step_start "No deploy - to deploy with hms, please pass 'deploy' parameter to this script:"
 	echo "cat debitoor.sh | sh -s deploy"
 fi
 
@@ -131,7 +148,7 @@ fi
 # Add git tag and push to github
 ################################################
 
-echo "${step}Adding git tag and pushing to github"
+step_start "Adding git tag and pushing to github"
 
 datetime=`date +%Y-%m-%d-%H-%M-%S`
 git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || delete_ready_branch $?
