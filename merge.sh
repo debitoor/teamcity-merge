@@ -73,7 +73,8 @@ git pull || exit $?
 ################################################
 
 message_on_commit_error(){
-	echo 'Commiting changes returned an error (status $1). We are assuming that this is due to no changes, and continuing'
+	commitErrorCode=$1
+	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and continuing'
 }
 
 echo "\nMerging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"

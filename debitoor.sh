@@ -105,13 +105,18 @@ git pull || delete_ready_branch $?
 
 step_start "Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
+message_on_commit_error(){
+	commitErrorCode=$1
+	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and continuing'
+}
+
 git config user.email "teamcityagent@e-conomic.com" || delete_ready_branch $?
 git config user.name "Teamcity" || delete_ready_branch $?
 git merge --squash "origin/ready/${branch}" || delete_ready_branch $?
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 commitMessage="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
 echo "Committing squashed merge with message: \"${message}\""
-git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || delete_ready_branch $?
+git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_commit_error $?
 
 ################################################
 # Run tests
