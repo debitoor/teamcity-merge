@@ -15,7 +15,7 @@ step_start(){
 	then
 		step_end
 	fi
-	stepName=$1
+	stepName=`echo "${1}" | sed -e 's/ /_/g'`
 	echo "##teamcity[progressStart '${stepName}']"
 }
 
