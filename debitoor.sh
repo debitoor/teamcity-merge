@@ -156,7 +156,7 @@ fi
 if [ "$1" = 'deploy' ]
 then
 	step_start "Adding git tag and pushing to github"
-	datetime=`date +%Y-%m-%d-%H-%M-%S`
+	datetime=`date +%Y-%m-%d_%H-%M-%S`
 	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || delete_ready_branch $?
 	git push origin --tags || delete_ready_branch $?
 else
