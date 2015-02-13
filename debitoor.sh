@@ -156,7 +156,7 @@ fi
 if [ "$1" = 'deploy' ]
 then
 	step_start "Tagging deploy on new relic"
-	curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[description]=This is a deployment by a ready build. ${commitMessage}" https://api.newrelic.com/deployments.xml || delete_ready_branch $?
+	curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${LAST_COMMIT_AUTHOR}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || delete_ready_branch $?
 else
 	step_start "Skipping tagging deploy on new relic"
 	echo "No deploy - to deploy with hms, please pass \"deploy\" parameter to this script:"
