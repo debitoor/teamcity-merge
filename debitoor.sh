@@ -122,9 +122,9 @@ git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_
 # Run tests
 ################################################
 
-step_start "Running tests with >npm run teamcity "
+step_start "Running tests with >npm run teamcity (swallow stdout)"
 
-npm run teamcity || delete_ready_branch $?
+npm run teamcity > /dev/null || delete_ready_branch $?
 
 ################################################
 # Push changes to github
