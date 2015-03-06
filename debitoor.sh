@@ -125,10 +125,10 @@ git config user.email "teamcity@e-conomic.com" || delete_ready_branch $?
 git config user.name "Teamcity" || delete_ready_branch $?
 git merge --squash "origin/ready/${branch}" || delete_ready_branch $?
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
-if [ "PR_NUMBER" = 'none' ]
+if [ "$PR_NUMBER" = 'none' ]
 then
 	commitMessage="${branchWithUnderscore2SpacesAndRemovedTimestamp}"
-felse
+else
 	commitMessage="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
 fi
 echo "Committing squashed merge with message: \"${message}\""
