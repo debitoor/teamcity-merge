@@ -118,7 +118,8 @@ step_start "Merging ready branch into master, with commit message that closes pu
 
 message_on_commit_error(){
 	commitErrorCode=$1
-	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and continuing'
+	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and exiting gracefully'
+	delete_ready_branch 0
 }
 
 git config user.email "teamcity@e-conomic.com" || delete_ready_branch $?

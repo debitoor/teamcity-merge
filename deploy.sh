@@ -28,7 +28,7 @@ if [ "$branch" = 'refs/heads/master' ]
 then
     echo "Master branch"
 else
-    echo "Error not master branch"
+    echo "Error not master branch" >&2
     _exit 1
 fi
 
@@ -42,7 +42,7 @@ if [ "$comitter" = 'Teamcity' ]
 then
     echo "Latest commit to master is by Teamcity"
 else
-    echo "Error. Latest commit to master is NOT by Teamcity"
+    echo "Error. Latest commit to master is NOT by Teamcity" >&2
     _exit 1
 fi
 
@@ -51,7 +51,7 @@ fi
 ################################################
 
 step_start "Checking that latest commit has no tag. If it has a tag it is already deployed"
-returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 &> /dev/null  ; echo $?`
+returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 &> /dev/null; echo $?`
 if [ "$returnValueWhenGettingTag" = '0' ]
 then
     echo "Master already has a tag, it is already deployed, skipping deploy"
