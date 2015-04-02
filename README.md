@@ -4,7 +4,8 @@ Script for TeamCity - Lets TeamCity handle merging to master and closing github 
 # What is this for?
 The script `merge.sh` is for use in a TC commandline build step. Se below for technical details.
 
-It is used for letting TC handle merging your pull requests to master and closing the pull request. The merge will only be done if your tests are green.
+It is used for letting TC handle merging your pull requests to master and closing the pull request.
+The merge will only be done if your tests are green.
 
 The benefits of letting TC handle merges to master are:
 - You will never see a red master build because of a merge to master (tests are run before merging)
@@ -15,7 +16,8 @@ The benefits of letting TC handle merges to master are:
 - This process can automatically push your changes to production if all tests are green, if you are running continuous release (optional)
 
 # How does the developer merge to master?
-Given that the developer is working in a branch called `featureX`, and this branch has been pushed to github, and a pull request has been opend for the `featureX` branch on github. All the developer has to do is:
+Given that the developer is working in a branch called `featureX`, and this branch has been pushed to github,
+and a pull request has been opend for the `featureX` branch on github. All the developer has to do is:
 ```
 git push origin featureX:ready/featureX
 ```
@@ -24,10 +26,10 @@ This will kick off the TC build that tries to merge the branch to master, checki
 
 NOTE: We wrote a commmand line tool that helps you, and makes things even easier for the developer: [tcmerge](https://github.com/e-conomic/tcmerge)
 
-
-
 # How to set up the TC build that merges to master and closes the associated pull request
-You need to configure a build for picking up pushes to `ready/*` branches, that merges them, runs tests and closes the associated pull request. The following sections describes the setting you need on your merge-TC build.
+You need to configure a build for picking up pushes to `ready/*` branches, that merges them,
+runs tests and closes the associated pull request.
+The following sections describes the setting you need on your merge-TC build.
 
 ## General Settings
 `Limit the number of simultaneously running builds (0 — unlimited)`: Set this to `1`. This effectivly creates an automated queue, making sure only one merge is done to master at a time.
@@ -46,17 +48,13 @@ You need to configure a build for picking up pushes to `ready/*` branches, that 
 
 ## Build steps
 
-1. The first build step you add should be a Command Line build step. We will call it `Merge ready branch into master`. In this step you copy the script from `merge.sh` from this reposiotry.
-2. The next build steps should run all your tests and verifications you want to run on your codebase. You normal master build.
-3. The next build step you add should be a Command Line build step. We will call it `Push changes to master`. And it will contail a single line: `git push origin master`.
-4. This next build step could be push to production, if you are running Continuous Release. This step is optional.
-5. The final step should be a Command Line build step. We will call it `Delete ready branch (Always run)`. You should set this step to always run, even if the previous steps failed. It will contain a single line: `git push origin ":ready/%env.branch%"`. 
+You just need one build step. In this build step you add a command-line build step, where you run the `merge.sh` script
+
 
 ## Triggers -> Add new trigger rule
-`Branch filter`: We do not want to trigger the build on commits to master, so we set this to:
+`Branch filter`: Set this to:
 ```
 +:*
--:<default>
 ```
 
 ## Parameters
@@ -68,3 +66,7 @@ You should add a parameter to the build
 
 `Value`: `%teamcity.build.branch%`
 
+# Automatically deploying to production
+
+For inspiration you can see how we deploy to production in the `deploy.sh` script. Basically any commit made to the
+`master`-branch by Teamcity is automatically deployed.
