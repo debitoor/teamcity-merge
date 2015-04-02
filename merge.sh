@@ -92,7 +92,7 @@ case ${branch} in
 	echo "Extracted pull request number:"
 	echo "${PR_NUMBER}"
 	case ${PR_NUMBER} in
-		*[!0-9]*) echo "Error pull request number does not match number regExp (weird!): ${error}" >&2; delete_ready_branch 1 ;;
+		''|*[!0-9]*) echo "Error pull request number does not match number regExp (weird!): ${error}" >&2; delete_ready_branch 1 ;;
 		*) echo "Success. Pull request number passes regExp test for number. Exporting PR_NUMBER=${PR_NUMBER}" ;;
 	esac
 	;;
