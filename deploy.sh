@@ -25,21 +25,32 @@ _exit (){
 step_start "Checking branch is master"
 if [ "$branch" = 'refs/heads/master' ]
 then
-    echo "master branch"
+    echo "Master branch"
 else
-    echo "not master branch"
-    exit 1
+    echo "Error not master branch"
+    _exit 1
 fi
 
 step_start "Checking comitter is Teamcity"
 comitter=`git log --pretty=format:'%cn' -n 1`
-if [ "comitter" = 'Teamcity' ]
+if [ "$comitter" = 'Teamcity' ]
 then
-    echo "latest commit to master is by Teamcity"
+    echo "Latest commit to master is by Teamcity"
 else
-    echo "latest commit to master is NOT by Teamcity"
-    exit 1
+    echo "Latest commit to master is NOT by Teamcity"
+    _exit 1
 fi
+
+step_start "Checking that latest commit has no tag. If it has a tag it is already deployed"
+returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 &> /dev/null  ; echo $?`
+if [ "$returnValueWhenGettingTag" = '0' ]
+then
+    echo "Master already has a tag, it is already deployed, skipping deploy"
+    _exit 0
+else
+    echo "Master has no tag yet, lets deploy"
+fi
+
 
 ################################################
 # Deploy to production
