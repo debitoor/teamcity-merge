@@ -99,15 +99,16 @@ case ${branch} in
 esac
 #####################################################################
 # Checkout master
-# Cleanup any leftovers for previous failed merges (reset --hard)
+# Cleanup any leftovers for previous failed merges (reset --hard, clean -fx)
 # And pull master
 #####################################################################
 
-step_start "Checking out, resetting (hard) and pulling master branch"
+step_start "Checking out master, resetting (hard), pulling from origin and cleaning"
 
 git checkout master || delete_ready_branch $?
 git reset --hard origin/master || delete_ready_branch $?
 git pull || delete_ready_branch $?
+git clean -fx
 
 ################################################
 # Merge into master
