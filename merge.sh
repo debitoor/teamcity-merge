@@ -36,18 +36,12 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project}
-@${hipchatUser}
-${commitMessage}"
+			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}"
 		else
-			hipchat "Success merging: ${project}
-@${hipchatUser}
-${commitMessage}"
+			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"
 		fi
 	else
-		hipchat "Failure merging: $2 - ${project}
-@${hipchatUser}
-${commitMessage}"
+		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"
 	fi
 	exit $1
 }
