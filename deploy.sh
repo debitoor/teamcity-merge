@@ -23,8 +23,10 @@ _exit (){
 # Check that we are on master branch
 ################################################
 
+branch=`git rev-parse --abbrev-ref HEAD`
+
 step_start "Checking branch is master"
-if [ "$branch" = 'refs/heads/master' ]
+if [ "$branch" = 'master' ]
 then
     echo "Master branch"
 else
