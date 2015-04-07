@@ -34,12 +34,18 @@ delete_ready_branch (){
 	if [ "$1" = '0' ]
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+			hipchat "$2: ${project}
+@${LAST_COMMIT_AUTHOR}
+${commitMessage}"
 		else
-			hipchat "Success merging: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+			hipchat "Success merging: ${project}
+@${LAST_COMMIT_AUTHOR}
+${commitMessage}"
 		fi
 	then
-		hipchat "Failure merging: $2 - ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+		hipchat "Failure merging: $2 - ${project}
+@${LAST_COMMIT_AUTHOR}
+${commitMessage}"
 	fi
 	exit $1
 }
