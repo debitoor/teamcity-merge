@@ -77,8 +77,9 @@ commitMessage=`git log -1 --pretty=%B`
 LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 hms deploy production-services "${project}" --no-log --retry || _exit $?
+hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
 hipchat "Success deploying ${project}
-@${LAST_COMMIT_AUTHOR}
+@${hipchatUser}
 ${commitMessage}"
 
 ################################################

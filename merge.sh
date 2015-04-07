@@ -31,21 +31,22 @@ delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
 	step_end
+	hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
 	if [ "$1" = '0' ]
 	then
 		if [ "$2" != '' ]
 		then
 			hipchat "$2: ${project}
-@${LAST_COMMIT_AUTHOR}
+@${hipchatUser}
 ${commitMessage}"
 		else
 			hipchat "Success merging: ${project}
-@${LAST_COMMIT_AUTHOR}
+@${hipchatUser}
 ${commitMessage}"
 		fi
 	else
 		hipchat "Failure merging: $2 - ${project}
-@${LAST_COMMIT_AUTHOR}
+@${hipchatUser}
 ${commitMessage}"
 	fi
 	exit $1
