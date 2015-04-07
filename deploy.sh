@@ -67,8 +67,10 @@ fi
 ################################################
 
 step_start "Deploying to production"
+commitMessage=`git log -1 --pretty=%B`
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 hms deploy production-services "${project}" --no-log --retry || _exit $?
+sh hipchat.sh "${project} Success deploying ${commitMessage}"
 
 ################################################
 # Add git tag and push to GitHub
@@ -78,7 +80,6 @@ step_start "Adding git tag and pushing to GitHub"
 git config user.email "teamcity@e-conomic.com" || _exit $?
 git config user.name "Teamcity" || _exit $?
 datetime=`date +%Y-%m-%d_%H-%M-%S`
-commitMessage=`git log -1 --pretty=%B`
 git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $?
 git push origin --tags || _exit $?
 

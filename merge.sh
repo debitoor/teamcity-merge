@@ -25,12 +25,25 @@ delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
 	step_end
+	if [ "$1" = '0' ]
+		if [ "$2" != '' ]
+		then
+			sh hipchat.sh "$2: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+		else
+			sh hipchat.sh "Success merging: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+		fi
+	then
+		sh hipchat.sh "Failure merging: $2 - ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+	fi
 	exit $1
 }
+project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
+commitMessage="${branch}"
 
 step_start "Finding author"
 
 LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
+
 echo "This will be the author of the merge commit in master: ${LAST_COMMIT_AUTHOR} (the last commit in branch was done by this person)"
 
 
@@ -39,7 +52,7 @@ case ${branch} in
   ## If the ready branch ends with "_no_pull_request" we will not try to match to a pull request. This is for merging latest texts
   step_start "No pull request - Git fetching"
   PR_NUMBER="none"
-  git fetch --prune || delete_ready_branch $?
+  git fetch --prune || delete_ready_branch $? "Could not git fetch"
   ;;
 *)
 	################################################
@@ -61,7 +74,7 @@ case ${branch} in
 	else
 		echo 'Fetch of pull request already in place in .git/config'
 	fi
-	git fetch --prune || delete_ready_branch $?
+	git fetch --prune || delete_ready_branch $? "Could not git fetch"
 
 	########################################################################################
 	# Lookup PR number
@@ -83,7 +96,7 @@ case ${branch} in
 
 	MATCHING_PULL_REQUEST=`git show-ref | grep $CURRENT_SHA | grep 'refs/remotes/origin/pullrequest/'`
 	if [ "$MATCHING_PULL_REQUEST" = '' ] ; then
-	  echo "Error finding matching pull request: ${error}" >&2; delete_ready_branch 1
+	  echo "Error finding matching pull request: ${error}" >&2; delete_ready_branch 1 "Could not find matching pull request"
 	fi
 	echo "Matching pull request:"
 	echo "${MATCHING_PULL_REQUEST}"
@@ -92,7 +105,7 @@ case ${branch} in
 	echo "Extracted pull request number:"
 	echo "${PR_NUMBER}"
 	case ${PR_NUMBER} in
-		''|*[!0-9]*) echo "Error pull request number does not match number regExp (weird!): ${error}" >&2; delete_ready_branch 1 ;;
+		''|*[!0-9]*) echo "Error pull request number does not match number regExp (weird!): ${error}" >&2; delete_ready_branch 1 "Could not find pull request number";;
 		*) echo "Success. Pull request number passes regExp test for number. Exporting PR_NUMBER=${PR_NUMBER}" ;;
 	esac
 	;;
@@ -105,10 +118,10 @@ esac
 
 step_start "Checking out master, resetting (hard), pulling from origin and cleaning"
 
-git checkout master || delete_ready_branch $?
-git reset --hard origin/master || delete_ready_branch $?
-git pull || delete_ready_branch $?
-git clean -fx
+git checkout master || delete_ready_branch $?  "Could not checkout master"
+git reset --hard origin/master || delete_ready_branch $? "Could not reset to master"
+git pull || delete_ready_branch $? "Could not pull master"
+git clean -fx || delete_ready_branch $? "Could not git clean on master"
 
 ################################################
 # Merge into master
@@ -120,12 +133,12 @@ step_start "Merging ready branch into master, with commit message that closes pu
 message_on_commit_error(){
 	commitErrorCode=$1
 	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and exiting gracefully'
-	delete_ready_branch 0
+	delete_ready_branch 0 "No changes in ready build"
 }
 
-git config user.email "teamcity@e-conomic.com" || delete_ready_branch $?
-git config user.name "Teamcity" || delete_ready_branch $?
-git merge --squash "origin/ready/${branch}" || delete_ready_branch $?
+git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
+git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
+git merge --squash "origin/ready/${branch}" || delete_ready_branch $? "Merge conflicts (could not merge)"
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 if [ "$PR_NUMBER" = 'none' ]
 then
@@ -142,7 +155,7 @@ git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_
 
 step_start "Running tests with >npm run teamcity "
 
-npm run teamcity || delete_ready_branch $?
+npm run teamcity || delete_ready_branch $? "Failing test(s)"
 
 ################################################
 # Push changes to github
@@ -150,6 +163,6 @@ npm run teamcity || delete_ready_branch $?
 
 step_start "Pushing changes to github master branch"
 
-git push origin master || delete_ready_branch $?
+git push origin master || delete_ready_branch $? "Could not push changes to GitHub"
 
-delete_ready_branch
+delete_ready_branch 0
