@@ -23,9 +23,8 @@ _exit (){
 # Check that we are on master branch
 ################################################
 
-branch=`git rev-parse --abbrev-ref HEAD`
-
 step_start "Checking branch is master"
+branch=`git rev-parse --abbrev-ref HEAD`
 if [ "$branch" = 'master' ]
 then
     echo "Master branch"
@@ -53,6 +52,7 @@ fi
 ################################################
 
 step_start "Checking that latest commit has no tag. If it has a tag it is already deployed"
+git fetch --tags || _exit $?
 returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 &> /dev/null; echo $?`
 if [ "$returnValueWhenGettingTag" = '0' ]
 then
