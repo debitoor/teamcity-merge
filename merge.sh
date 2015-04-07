@@ -19,6 +19,12 @@ step_start(){
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
+hipchat(){
+	curl -H "Content-Type: application/json" \
+		 -X POST \
+		 -d "{\"color\": \"purple\", \"message_format\": \"text\", \"message\": \"$1\" }" \
+		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
+}
 
 # Always last thing done before exit
 delete_ready_branch (){
@@ -28,12 +34,12 @@ delete_ready_branch (){
 	if [ "$1" = '0' ]
 		if [ "$2" != '' ]
 		then
-			sh hipchat.sh "$2: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+			hipchat "$2: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
 		else
-			sh hipchat.sh "Success merging: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+			hipchat "Success merging: ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
 		fi
 	then
-		sh hipchat.sh "Failure merging: $2 - ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
+		hipchat "Failure merging: $2 - ${project} ${LAST_COMMIT_AUTHOR} ${commitMessage}"
 	fi
 	exit $1
 }

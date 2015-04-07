@@ -13,6 +13,12 @@ step_start(){
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
+hipchat(){
+	curl -H "Content-Type: application/json" \
+		 -X POST \
+		 -d "{\"color\": \"purple\", \"message_format\": \"text\", \"message\": \"$1\" }" \
+		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
+}
 # Always last thing done before exit
 _exit (){
 	step_end
@@ -70,7 +76,7 @@ step_start "Deploying to production"
 commitMessage=`git log -1 --pretty=%B`
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 hms deploy production-services "${project}" --no-log --retry || _exit $?
-sh hipchat.sh "Success deploying ${project} ${commitMessage}"
+hipchat "Success deploying ${project} ${commitMessage}"
 
 ################################################
 # Add git tag and push to GitHub
