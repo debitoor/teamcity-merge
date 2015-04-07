@@ -32,6 +32,7 @@ delete_ready_branch (){
 	git push origin ":ready/${branch}"
 	step_end
 	if [ "$1" = '0' ]
+	then
 		if [ "$2" != '' ]
 		then
 			hipchat "$2: ${project}
@@ -42,7 +43,7 @@ ${commitMessage}"
 @${LAST_COMMIT_AUTHOR}
 ${commitMessage}"
 		fi
-	then
+	else
 		hipchat "Failure merging: $2 - ${project}
 @${LAST_COMMIT_AUTHOR}
 ${commitMessage}"
