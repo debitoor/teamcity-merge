@@ -59,7 +59,8 @@ then
     echo "Master already has a tag, it is already deployed. Skipping deploy"
     _exit 0
 else
-    echo "Master has no tag yet, lets deploy"
+    echo "Master has no tag yet, lets deploy (${returnValueWhenGettingTag})"
+    _exit 0
 fi
 
 ################################################
