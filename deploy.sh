@@ -53,7 +53,7 @@ fi
 
 step_start "Checking that latest commit has no tag. If it has a tag it is already deployed"
 git fetch --tags || _exit $?
-returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 &> /dev/null; echo $?`
+returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 2>&1 >/dev/null; echo $?`
 if [ "$returnValueWhenGettingTag" = '0' ]
 then
     echo "Master already has a tag, it is already deployed. Skipping deploy"
