@@ -75,6 +75,8 @@ hms deploy production-services "${project}" --no-log --retry || _exit $?
 ################################################
 
 step_start "Adding git tag and pushing to GitHub"
+git config user.email "teamcity@e-conomic.com" || _exit $?
+git config user.name "Teamcity" || _exit $?
 datetime=`date +%Y-%m-%d_%H-%M-%S`
 commitMessage=`git log -1 --pretty=%B`
 git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $?
