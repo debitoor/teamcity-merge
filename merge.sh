@@ -47,6 +47,8 @@ delete_ready_branch (){
 }
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 commitMessage="${branch}"
+git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
+git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
 
 step_start "Finding author"
 
@@ -123,17 +125,18 @@ esac
 # Merge latests texts to ready branch
 #####################################################################
 
-step_start "Merge latests texts to ready branch"
+if [ "$1" = 'texts' ]
+then
+	step_start "Merge latests texts to ready branch"
 
-git fetch origin texts || delete_ready_branch $? "Could not fetch texts branch"
-git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
-git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
-git config merge.renamelimit 999999 || delete_ready_branch $? "Could not set git renamelimit"
-git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts"
-git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json"
-git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json"
-git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
-git push origin "ready/${branch}" || delete_ready_branch $? "Could push commit with latests texts to GitHub"
+	git fetch origin texts || delete_ready_branch $? "Could not fetch texts branch"
+	git config merge.renamelimit 999999 || delete_ready_branch $? "Could not set git renamelimit"
+	git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts"
+	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json"
+	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json"
+	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
+	git push origin "ready/${branch}" || delete_ready_branch $? "Could push commit with latests texts to GitHub"
+fi
 
 #####################################################################
 # Checkout master
@@ -152,11 +155,15 @@ git clean -fx || delete_ready_branch $? "Could not git clean on master"
 # Merge latests texts to master branch
 #####################################################################
 
-step_start "Merge latests texts to master branch"
-git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts to master"
-git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json (master)"
-git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json to master"
-git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
+if [ "$1" = 'texts' ]
+then
+	step_start "Merge latests texts to master branch"
+
+	git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts to master"
+	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json (master)"
+	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json to master"
+	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
+fi
 
 ################################################
 # Merge into master
