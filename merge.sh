@@ -124,6 +124,7 @@ esac
 #####################################################################
 
 step_start "Merge latests texts to ready branch"
+
 git fetch origin texts || delete_ready_branch $? "Could not fetch texts branch"
 git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
 git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
@@ -146,6 +147,16 @@ git checkout master || delete_ready_branch $?  "Could not checkout master"
 git reset --hard origin/master || delete_ready_branch $? "Could not reset to master"
 git pull || delete_ready_branch $? "Could not pull master"
 git clean -fx || delete_ready_branch $? "Could not git clean on master"
+
+#####################################################################
+# Merge latests texts to master branch
+#####################################################################
+
+step_start "Merge latests texts to master branch"
+git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts to master"
+git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json (master)"
+git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json to master"
+git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
 
 ################################################
 # Merge into master
