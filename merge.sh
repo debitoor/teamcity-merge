@@ -118,6 +118,20 @@ case ${branch} in
 	esac
 	;;
 esac
+
+#####################################################################
+# Merge latests texts to ready branch
+#####################################################################
+git fetch origin texts || delete_ready_branch $? "Could not fetch texts branch"
+git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
+git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
+git config merge.renamelimit 999999 || delete_ready_branch $? "Could not set git renamelimit"
+git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts"
+git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json"
+git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json"
+git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
+git push origin "ready/${branch}" || delete_ready_branch $? "Could push commit with latests texts to GitHub"
+
 #####################################################################
 # Checkout master
 # Cleanup any leftovers for previous failed merges (reset --hard, clean -fx)
@@ -144,8 +158,6 @@ message_on_commit_error(){
 	delete_ready_branch 0 "No changes in ready build"
 }
 
-git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
-git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
 git merge --squash "origin/ready/${branch}" || delete_ready_branch $? "Merge conflicts (could not merge)"
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 if [ "$PR_NUMBER" = 'none' ]
