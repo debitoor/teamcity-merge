@@ -135,7 +135,6 @@ then
 	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json"
 	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json"
 	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
-	git push origin "ready/${branch}" || delete_ready_branch $? "Could push commit with latests texts to GitHub"
 fi
 
 #####################################################################
@@ -178,7 +177,7 @@ message_on_commit_error(){
 	delete_ready_branch 0 "No changes in ready build"
 }
 
-git merge --squash "origin/ready/${branch}" || delete_ready_branch $? "Merge conflicts (could not merge)"
+git merge --squash "ready/${branch}" || delete_ready_branch $? "Merge conflicts (could not merge)"
 branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
 if [ "$PR_NUMBER" = 'none' ]
 then
