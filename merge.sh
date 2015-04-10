@@ -36,13 +36,15 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}"
+			message=`echo "$2: ${project}\n@${hipchatUser}\n${commitMessage}"`
 		else
-			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"
+			message=`echo "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"`
 		fi
 	else
-		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"
+		message=`echo "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"`
 	fi
+	hipchat "${message}"
+	echo "${message}"
 	exit $1
 }
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
@@ -169,24 +171,31 @@ fi
 # You will want to use you own email here
 ################################################
 
-step_start "Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
+case ${branch} in
+merge_latest_texts*)
+	step_start "Branch name starts with merge_latest_texts - skipping merging ready branch into master"
+  	;;
+*)
+	step_start "Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
-message_on_commit_error(){
-	commitErrorCode=$1
-	echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and exiting gracefully'
-	delete_ready_branch 0 "No changes in ready build"
-}
+	message_on_commit_error(){
+		commitErrorCode=$1
+		echo 'Commiting changes returned an error (status: ${commitErrorCode}). We are assuming that this is due to no changes, and exiting gracefully'
+		delete_ready_branch 0 "No changes in ready build"
+	}
 
-git merge --squash "ready/${branch}" || delete_ready_branch $? "Merge conflicts (could not merge)"
-branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
-if [ "$PR_NUMBER" = 'none' ]
-then
-	commitMessage="${branchWithUnderscore2SpacesAndRemovedTimestamp}"
-else
-	commitMessage="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
-fi
-echo "Committing squashed merge with message: \"${message}\""
-git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_commit_error $?
+	git merge --squash "ready/${branch}" || delete_ready_branch $? "Merge conflicts (could not merge)"
+	branchWithUnderscore2SpacesAndRemovedTimestamp=`echo "${branch}" | sed -e 's/_/ /g' | sed -e 's/\/[0-9]*s$//g'`
+	if [ "$PR_NUMBER" = 'none' ]
+	then
+		commitMessage="${branchWithUnderscore2SpacesAndRemovedTimestamp}"
+	else
+		commitMessage="fixes #${PR_NUMBER} - ${branchWithUnderscore2SpacesAndRemovedTimestamp}"
+	fi
+	echo "Committing squashed merge with message: \"${message}\""
+	git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_commit_error $?
+	;;
+esac
 
 ################################################
 # Run tests
