@@ -16,7 +16,7 @@ step_start(){
 hipchat(){
 	curl -H "Content-Type: application/json" \
 		 -X POST \
-		 -d "{\"color\": \"purple\", \"message_format\": \"text\", \"message\": \"$1\" }" \
+		 -d "{\"color\": \"$2\", \"notify\": \"true\", \"message_format\": \"text\", \"message\": \"$1\" }" \
 		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
 }
 # Always last thing done before exit
@@ -78,7 +78,7 @@ LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 hms deploy production-services "${project}" --no-log --retry || _exit $?
 hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
-hipchat "Success deploying ${project}\n@${hipchatUser}\n${commitMessage}"
+hipchat "Success deploying ${project}\n@${hipchatUser}\n${commitMessage}" green
 
 ################################################
 # Add git tag and push to GitHub

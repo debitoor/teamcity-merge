@@ -22,7 +22,7 @@ step_start(){
 hipchat(){
 	curl -H "Content-Type: application/json" \
 		 -X POST \
-		 -d "{\"color\": \"purple\", \"message_format\": \"text\", \"message\": \"$1\" }" \
+		 -d "{\"color\": \"$2\", \"notify\": \"true\", \"message_format\": \"text\", \"message\": \"$1\" }" \
 		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
 }
 
@@ -36,14 +36,14 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}"
+			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}" green
 			message=`echo "$2: ${project}\n@${hipchatUser}\n${commitMessage}"`
 		else
-			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"
+			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}" green
 			message=`echo "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"`
 		fi
 	else
-		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"
+		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}" red
 		message=`echo "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"`
 	fi
 	echo "\n${message}"
