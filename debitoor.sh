@@ -46,6 +46,7 @@ delete_ready_branch (){
 	else
 		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}" red
 		echo "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"
+		exit $1
 	fi
 }
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
