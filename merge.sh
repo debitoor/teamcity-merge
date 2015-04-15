@@ -36,7 +36,7 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}" green
+			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}" yellow
 			message=`echo "$2: ${project}\n@${hipchatUser}\n${commitMessage}"`
 		else
 			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}" green
