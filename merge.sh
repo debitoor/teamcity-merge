@@ -39,8 +39,8 @@ delete_ready_branch (){
 			hipchat "$2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}" yellow
 			message=`echo "$2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}"`
 		else
-			hipchat "Success merging\n${project}\n@${hipchatUser}\n${commitMessage}" green
-			message=`echo "Success merging\n${project}\n@${hipchatUser}\n${commitMessage}"`
+			hipchat "Success merging ${project}\n@${hipchatUser}\n${commitMessage}" green
+			message=`echo "Success merging ${project}\n@${hipchatUser}\n${commitMessage}"`
 		fi
 	else
 		hipchat "Failure merging: $2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}" red
