@@ -36,15 +36,15 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}" yellow
-			message=`echo "$2: ${project}\n@${hipchatUser}\n${commitMessage}"`
+			hipchat "$2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}" yellow
+			message=`echo "$2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}"`
 		else
-			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}" green
-			message=`echo "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"`
+			hipchat "Success merging\n${project}\n@${hipchatUser}\n${commitMessage}" green
+			message=`echo "Success merging\n${project}\n@${hipchatUser}\n${commitMessage}"`
 		fi
 	else
-		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}" red
-		message=`echo "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"`
+		hipchat "Failure merging: $2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}" red
+		message=`echo "Failure merging: $2\n${project}\n@${hipchatUser}\n${buildUrl}\n${commitMessage}"`
 	fi
 	echo "\n${message}"
 	exit $1
