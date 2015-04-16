@@ -26,7 +26,7 @@ hipchat(){
 		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
 }
 
-# Always last thing done before exit
+# Always last thing done after merge (fail or success)
 delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"

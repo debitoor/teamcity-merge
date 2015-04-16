@@ -26,7 +26,7 @@ hipchat(){
 		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
 }
 
-# Always last thing done before deploy
+# Always last thing done after merge (fail or success)
 delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
@@ -36,19 +36,61 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2: ${project}\n@${hipchatUser}\n${commitMessage}" green
-			echo "$2: ${project}\n@${hipchatUser}\n${commitMessage}"
+			hipchat "$2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}" yellow
+			message=`echo "$2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}"`
 		else
-			hipchat "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}" green
-			echo "Success merging: ${project}\n@${hipchatUser}\n${commitMessage}"
+			hipchat "Success merging ${project}\n@${hipchatUser}\n${commitMessage}" green
+			message=`echo "Success merging ${project}\n@${hipchatUser}\n${commitMessage}"`
+			deploy
 		fi
-		deploy
 	else
-		hipchat "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}" red
-		echo "Failure merging: $2 - ${project}\n@${hipchatUser}\n${commitMessage}"
-		exit $1
+		hipchat "Failure merging: $2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}" red
+		message=`echo "Failure merging: $2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}"`
 	fi
+	echo "\n${message}"
+	exit $1
 }
+
+# Always last thing done before exit
+_exit (){
+	step_end
+	exit $1
+}
+
+
+deploy(){
+	################################################
+	# Deploy to production
+	################################################
+
+	step_start "Deploying to production"
+	commitMessage=`git log -1 --pretty=%B`
+	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
+	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
+	hms deploy production-services "${project}" --no-log --retry || _exit $?
+	hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	hipchat "Success deploying ${project}\n@${hipchatUser}\n${commitMessage}" green
+
+	################################################
+	# Add git tag and push to GitHub
+	################################################
+
+	step_start "Adding git tag and pushing to GitHub"
+	git config user.email "teamcity@e-conomic.com" || _exit $?
+	git config user.name "Teamcity" || _exit $?
+	datetime=`date +%Y-%m-%d_%H-%M-%S`
+	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $?
+	git push origin --tags || _exit $?
+
+	################################################
+	# Mark deploy on New Relic
+	################################################
+
+	step_start "Marking deploy on New Relic"
+	author=`git log --pretty=format:'%an' -n 1`
+	curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $?
+}
+
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 commitMessage="${branch}"
 git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
@@ -216,43 +258,3 @@ step_start "Pushing changes to github master branch"
 git push origin master || delete_ready_branch $? "Could not push changes to GitHub"
 
 delete_ready_branch 0
-
-_exit (){
-	step_end
-	exit $1
-}
-
-
-deploy(){
-	################################################
-	# Deploy to production
-	################################################
-
-	step_start "Deploying to production"
-	commitMessage=`git log -1 --pretty=%B`
-	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
-	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-	hms deploy production-services "${project}" --no-log --retry || _exit $?
-	hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
-	hipchat "Success deploying ${project}\n@${hipchatUser}\n${commitMessage}" green
-
-	################################################
-	# Add git tag and push to GitHub
-	################################################
-
-	step_start "Adding git tag and pushing to GitHub"
-	git config user.email "teamcity@e-conomic.com" || _exit $?
-	git config user.name "Teamcity" || _exit $?
-	datetime=`date +%Y-%m-%d_%H-%M-%S`
-	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $?
-	git push origin --tags || _exit $?
-
-	################################################
-	# Mark deploy on New Relic
-	################################################
-
-	step_start "Marking deploy on New Relic"
-	author=`git log --pretty=format:'%an' -n 1`
-	curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $?
-	_exit 0
-}
