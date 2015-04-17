@@ -39,8 +39,8 @@ delete_ready_branch (){
 			hipchat "$2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}" yellow
 			message=`echo "$2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}"`
 		else
-			hipchat "Success merging ${project}\n@${hipchatUser}\n${commitMessage}" green
-			message=`echo "Success merging ${project}\n@${hipchatUser}\n${commitMessage}"`
+			hipchat "Success merging ${project}\n@${hipchatUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+			message=`echo "Success merging ${project}\n@${hipchatUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}"`
 			deploy
 		fi
 	else
@@ -240,6 +240,8 @@ merge_latest_texts*)
 	git commit -m "${commitMessage}" --author "${LAST_COMMIT_AUTHOR}" || message_on_commit_error $?
 	;;
 esac
+
+mergeCommitSha=`git log -1 --format="%H"`
 
 ################################################
 # Run tests
