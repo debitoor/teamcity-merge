@@ -24,6 +24,12 @@ hipchat(){
 		 -X POST \
 		 -d "{\"color\": \"$2\", \"notify\": \"true\", \"message_format\": \"text\", \"message\": \"$1\" }" \
 		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
+
+	curl -X POST -i -H \
+		"Content-Type: application/json" \
+		-H "Accept: application/json" \
+		-H "Authorization: Bearer ${GITTER_TOKEN}" "https://api.gitter.im/v1/rooms/555c7bea15522ed4b3e0ab08/chatMessages" \
+		-d '{"text":"$1"}'
 }
 
 # Always last thing done after merge (fail or success)
