@@ -80,11 +80,11 @@ deploy(){
 	if [ -f Procfile ]
 	then
 		heroku_project=`cat package.json | grep "\"heroku\": \"" | sed 's/\s*"heroku": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-		if [ "$heroku_project" == "" ]
+		if [ "${heroku_project}" == "" ]
 		then 
-			heroku_project="$project"
+			heroku_project="${project}"
 		fi
-		heroku git:remote -a "$heroku_project" || true
+		heroku git:remote -a "${heroku_project}" || true
 		git push heroku master || _exit $? "heroku deploy failed"
 	else
 		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
