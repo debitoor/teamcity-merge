@@ -76,11 +76,10 @@ deploy(){
 	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 	
-
 	if [ -f Procfile ]
 	then
 		heroku_project=`cat package.json | grep "\"heroku\": \"" | sed 's/\s*"heroku": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-		if [ "${heroku_project}" == "" ]
+		if [ "${heroku_project}" = '' ]
 		then 
 			heroku_project="${project}"
 		fi
