@@ -19,12 +19,7 @@ step_start(){
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
-hipchat(){
-	curl -H "Content-Type: application/json" \
-		 -X POST \
-		 -d "{\"color\": \"$2\", \"notify\": \"true\", \"message_format\": \"text\", \"message\": \"$1\" }" \
-		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
-
+gitter(){
 	curl -X POST -i -H \
 		"Content-Type: application/json" \
 		-H "Accept: application/json" \
@@ -37,21 +32,21 @@ delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
 	step_end
-	hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	gitterUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
 	if [ "$1" = '0' ]
 	then
 		if [ "$2" != '' ]
 		then
-			hipchat "$2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}" yellow
-			message=`echo "$2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}"`
+			gitter "$2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" yellow
+			message=`echo "$2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}"`
 		else
-			hipchat "Success merging ${project}\n@${hipchatUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
-			message=`echo "Success merging ${project}\n@${hipchatUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}"`
+			gitter "Success merging ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+			message=`echo "Success merging ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}"`
 			deploy
 		fi
 	else
-		hipchat "Failure merging: $2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}" red
-		message=`echo "Failure merging: $2\n${project}\n@${hipchatUser}\n${commitMessage}\n${buildUrl}"`
+		gitter "Failure merging: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" red
+		message=`echo "Failure merging: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}"`
 	fi
 	echo "\n${message}"
 	exit $1
@@ -60,7 +55,14 @@ delete_ready_branch (){
 # Always last thing done before exit
 _exit (){
 	step_end
-	exit $1
+	gitterUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	if [ "$1" = '0' ]
+	then
+		exit
+	else
+		gitter "Failure: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" red
+		exit $1
+	fi
 }
 
 
@@ -73,20 +75,19 @@ deploy(){
 	commitMessage=`git log -1 --pretty=%B`
 	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-	hms deploy production-services "${project}" --no-log --retry || _exit $?
-	hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
-	hipchat "Success deploying ${project}\n@${hipchatUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+	hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
+	gitter "Success deploying ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
 
 	################################################
 	# Add git tag and push to GitHub
 	################################################
 
 	step_start "Adding git tag and pushing to GitHub"
-	git config user.email "teamcity@e-conomic.com" || _exit $?
-	git config user.name "Teamcity" || _exit $?
+	git config user.email "teamcity@e-conomic.com" || _exit $? "Could not set git user.email"
+	git config user.name "Teamcity" || _exit $? "Could not set git user.name"
 	datetime=`date +%Y-%m-%d_%H-%M-%S`
-	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $?
-	git push origin --tags || _exit $?
+	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $? "Could not create git tag"
+	git push origin --tags || _exit $? "Could not push git tag to GitHub"
 
 	################################################
 	# Mark deploy on New Relic
@@ -94,7 +95,8 @@ deploy(){
 
 	step_start "Marking deploy on New Relic"
 	author=`git log --pretty=format:'%an' -n 1`
-	curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $?
+	curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $? "Could not tag deploy in New Relic"
+	_exit 0
 }
 
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
