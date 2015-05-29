@@ -75,7 +75,21 @@ deploy(){
 	commitMessage=`git log -1 --pretty=%B`
 	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-	hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
+	
+
+	if [ -f Procfile ]
+	then
+		heroku_project=`cat package.json | grep "\"heroku\": \"" | sed 's/\s*"heroku": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
+		if [ "$heroku_project" == "" ]
+		then 
+			heroku_project="$project"
+		fi
+		heroku git:remote -a "$heroku_project" || true
+		git push heroku master || _exit $? "heroku deploy failed"
+	else
+		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
+	fi
+
 	gitter "Success deploying ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
 
 	################################################
