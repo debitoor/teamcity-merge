@@ -13,16 +13,25 @@ step_start(){
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
-hipchat(){
-	curl -H "Content-Type: application/json" \
-		 -X POST \
-		 -d "{\"color\": \"$2\", \"notify\": \"true\", \"message_format\": \"text\", \"message\": \"$1\" }" \
-		 "https://api.hipchat.com/v2/room/807962/notification?auth_token=${HIPCHAT_API_KEY}"
+gitter(){
+	curl -X POST -i -H \
+		"Content-Type: application/json" \
+		-H "Accept: application/json" \
+		-H "Authorization: Bearer ${GITTER_TOKEN}" "https://api.gitter.im/v1/rooms/555c7bea15522ed4b3e0ab08/chatMessages" \
+		-d "{\"text\":\"![$2](https://raw.githubusercontent.com/e-conomic/teamcity-merge/master/gfx/$2.png) $1\"}"
 }
+
 # Always last thing done before exit
 _exit (){
 	step_end
-	exit $1
+	gitterUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	if [ "$1" = '0' ]
+	then
+		exit
+	else
+		gitter "Deploy failure: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" red
+		exit $1
+	fi
 }
 
 ################################################
@@ -36,7 +45,7 @@ then
     echo "Master branch"
 else
     echo "Error: Not master branch" >&2
-    _exit 1
+    _exit 1 "Not master branch"
 fi
 
 ##########################################################
@@ -50,7 +59,7 @@ then
     echo "Latest commit to master is by Teamcity"
 else
     echo "Error: Latest commit to master is NOT by Teamcity" >&2
-    _exit 1
+    _exit 1 "Latest commit to master is NOT by Teamcity"
 fi
 
 ################################################
@@ -58,7 +67,7 @@ fi
 ################################################
 
 step_start "Checking that latest commit has no tag. If it has a tag it is already deployed"
-git fetch --tags || _exit $?
+git fetch --tags || _exit $? "Can not fet git tags"
 returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 2>&1 >/dev/null; echo $?`
 if [ "$returnValueWhenGettingTag" = '0' ]
 then
@@ -76,20 +85,19 @@ step_start "Deploying to production"
 commitMessage=`git log -1 --pretty=%B`
 LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-hms deploy production-services "${project}" --no-log --retry || _exit $?
-hipchatUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
-hipchat "Success deploying ${project}\n@${hipchatUser}\n${commitMessage}" green
+hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
+gitter "Success deploying ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
 
 ################################################
 # Add git tag and push to GitHub
 ################################################
 
 step_start "Adding git tag and pushing to GitHub"
-git config user.email "teamcity@e-conomic.com" || _exit $?
-git config user.name "Teamcity" || _exit $?
+git config user.email "teamcity@e-conomic.com" || _exit $? "Could not set git user.email"
+git config user.name "Teamcity" || _exit $? "Could not set git user.name"
 datetime=`date +%Y-%m-%d_%H-%M-%S`
-git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $?
-git push origin --tags || _exit $?
+git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $? "Could not create git tag"
+git push origin --tags || _exit $? "Could not push git tag to GitHub"
 
 ################################################
 # Mark deploy on New Relic
@@ -97,5 +105,6 @@ git push origin --tags || _exit $?
 
 step_start "Marking deploy on New Relic"
 author=`git log --pretty=format:'%an' -n 1`
-curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $?
+curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $? "Could not tag deploy in New Relic"
 _exit 0
+
