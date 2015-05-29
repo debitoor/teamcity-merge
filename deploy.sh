@@ -14,7 +14,7 @@ step_start(){
 }
 
 gitter(){
-	curl -X POST -i -H \
+	curl -X POST -i -H --silent \
 		"Content-Type: application/json" \
 		-H "Accept: application/json" \
 		-H "Authorization: Bearer ${GITTER_TOKEN}" "https://api.gitter.im/v1/rooms/555c7bea15522ed4b3e0ab08/chatMessages" \
