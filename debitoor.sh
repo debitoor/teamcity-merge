@@ -66,16 +66,8 @@ _exit (){
 }
 
 
-deploy(){
-	################################################
-	# Deploy to production
-	################################################
-
-	step_start "Deploying to production"
-	commitMessage=`git log -1 --pretty=%B`
-	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
-	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-
+old_school_deploy(){
+	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
 	if [ -f Procfile ]
 	then
 		heroku_project=`cat package.json | grep "\"heroku\": \"" | sed 's/\s*"heroku": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
@@ -88,7 +80,24 @@ deploy(){
 	else
 		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
 	fi
+}
 
+deploy(){
+	################################################
+	# Deploy to production
+	################################################
+
+	step_start "Deploying to production"
+	commitMessage=`git log -1 --pretty=%B`
+	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
+	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
+	deployscript=`cat package.json | grep "\"deploy\": \""`
+	if [ "$deployscript" = '' ]
+	then
+		old_school_deploy
+	else
+		npm run deploy || _exit $? "npm run deploy failed"
+	fi
 	gitter "Success deploying ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
 
 	################################################
