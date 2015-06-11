@@ -90,7 +90,7 @@ old_school_deploy(){
 		then
 			heroku_project="${project}"
 		fi
-		git remote add heroku "https://git.heroku.com/${heroku_project}.git" || true
+		git remote add heroku "ssh://git@heroku.com/${heroku_project}.git" || true
 		git push heroku master -f || _exit $? "heroku deploy failed"
 	else
 		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
