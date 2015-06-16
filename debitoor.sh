@@ -1,8 +1,8 @@
 #!/bin/sh
 if [ "$branch" = 'refs/heads/master' ]
 then
-    echo "master branch, doing nothing"
-    exit 0
+	echo "master branch, doing nothing"
+	exit 0
 fi
 
 ### Step helper functions
@@ -116,7 +116,7 @@ deploy(){
 	################################################
 
 	step_start "Adding git tag and pushing to GitHub"
-	git config user.email "teamcity@e-conomic.com" || _exit $? "Could not set git user.email"
+	git config user.email "debitoor-bot@debitoor.com" || _exit $? "Could not set git user.email"
 	git config user.name "Teamcity" || _exit $? "Could not set git user.name"
 	datetime=`date +%Y-%m-%d_%H-%M-%S`
 	git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $? "Could not create git tag"
@@ -134,7 +134,7 @@ deploy(){
 
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 commitMessage="${branch}"
-git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
+git config user.email "debitoor-bot@debitoor.com" || delete_ready_branch $? "Could not set git email"
 git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
 
 step_start "Finding author"

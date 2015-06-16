@@ -125,7 +125,7 @@ gitter "Success deploying ${project}\n@${gitterUser}\n${commitMessage}\n${commit
 ################################################
 
 step_start "Adding git tag and pushing to GitHub"
-git config user.email "teamcity@e-conomic.com" || _exit $? "Could not set git user.email"
+git config user.email "debitoor-bot@debitoor.com" || _exit $? "Could not set git user.email"
 git config user.name "Teamcity" || _exit $? "Could not set git user.name"
 datetime=`date +%Y-%m-%d_%H-%M-%S`
 git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $? "Could not create git tag"

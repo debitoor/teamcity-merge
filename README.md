@@ -24,7 +24,7 @@ git push origin featureX:ready/featureX
 
 This will kick off the TC build that tries to merge the branch to master, checking that all tests are green in the process.
 
-NOTE: We wrote a commmand line tool that helps you, and makes things even easier for the developer: [tcmerge](https://github.com/e-conomic/tcmerge)
+NOTE: We wrote a commmand line tool that helps you, and makes things even easier for the developer: [tcmerge](https://github.com/debitoor/tcmerge)
 
 # How to set up the TC build that merges to master and closes the associated pull request
 You need to configure a build for picking up pushes to `ready/*` branches, that merges them,

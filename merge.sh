@@ -51,7 +51,7 @@ delete_ready_branch (){
 }
 project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 commitMessage="${branch}"
-git config user.email "teamcity@e-conomic.com" || delete_ready_branch $? "Could not set git email"
+git config user.email "debitoor-bot@debitoor.com" || delete_ready_branch $? "Could not set git email"
 git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
 
 step_start "Finding author"
