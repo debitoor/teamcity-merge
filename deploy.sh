@@ -52,10 +52,10 @@ step_start "Checking branch is master"
 branch=`git rev-parse --abbrev-ref HEAD`
 if [ "$branch" = 'master' ]
 then
-    echo "Master branch"
+	echo "Master branch"
 else
-    echo "Error: Not master branch" >&2
-    _exit 1 "Not master branch"
+	echo "Error: Not master branch" >&2
+	_exit 1 "Not master branch"
 fi
 
 ##########################################################
@@ -66,10 +66,10 @@ step_start "Checking comitter is Teamcity"
 comitter=`git log --pretty=format:'%cn' -n 1`
 if [ "$comitter" = 'Teamcity' ]
 then
-    echo "Latest commit to master is by Teamcity"
+	echo "Latest commit to master is by Teamcity"
 else
-    echo "Error: Latest commit to master is NOT by Teamcity" >&2
-    _exit 1 "Latest commit to master is NOT by Teamcity"
+	echo "Error: Latest commit to master is NOT by Teamcity" >&2
+	_exit 1 "Latest commit to master is NOT by Teamcity"
 fi
 
 ################################################
@@ -81,25 +81,23 @@ git fetch --tags || _exit $? "Can not fet git tags"
 returnValueWhenGettingTag=`git describe --exact-match --abbrev=0 2>&1 >/dev/null; echo $?`
 if [ "$returnValueWhenGettingTag" = '0' ]
 then
-    echo "Master already has a tag, it is already deployed. Skipping deploy"
-    _exit 0
+	echo "Master already has a tag, it is already deployed. Skipping deploy"
+	_exit 0
 else
-    echo "Master has no tag yet, lets deploy (return value when getting tag: ${returnValueWhenGettingTag})"
+	echo "Master has no tag yet, lets deploy (return value when getting tag: ${returnValueWhenGettingTag})"
 fi
 
 ################################################
 # Deploy to production
 ################################################
+heroku_project= `node -e "console.log(require('./package.json').heroku || '')"`
+deployscript= `node -e "console.log(require('./package.json').deploy || '')"`
+project= `node -e "console.log(require('./package.json').name || '')"`
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
-	if [ -f Procfile ]
+	if [ heroku_project ]
 	then
-		heroku_project=`cat package.json | grep "\"heroku\": \"" | sed 's/\s*"heroku": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-		if [ "${heroku_project}" = '' ]
-		then
-			heroku_project="${project}"
-		fi
 		git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
 	else
 		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
@@ -109,8 +107,6 @@ old_school_deploy(){
 step_start "Deploying to production"
 commitMessage=`git log -1 --pretty=%B`
 LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
-project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-deployscript=`cat package.json | grep "\"deploy\": \""`
 if [ "$deployscript" = '' ]
 then
 	old_school_deploy
@@ -138,4 +134,3 @@ step_start "Marking deploy on New Relic"
 author=`git log --pretty=format:'%an' -n 1`
 curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $? "Could not tag deploy in New Relic"
 _exit 0
-

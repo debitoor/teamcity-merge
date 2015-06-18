@@ -76,16 +76,13 @@ _exit (){
 	fi
 }
 
+heroku_project= `node -e "console.log(require('./package.json').heroku || '')"`
+project= `node -e "console.log(require('./package.json').name || '')"`
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
-	if [ -f Procfile ]
+	if [ heroku_project ]
 	then
-		heroku_project=`cat package.json | grep "\"heroku\": \"" | sed 's/\s*"heroku": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-		if [ "${heroku_project}" = '' ]
-		then
-			heroku_project="${project}"
-		fi
 		git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
 	else
 		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
@@ -100,8 +97,7 @@ deploy(){
 	step_start "Deploying to production"
 	commitMessage=`git log -1 --pretty=%B`
 	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
-	project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
-	deployscript=`cat package.json | grep "\"deploy\": \""`
+	deployscript=`node -e "console.log(require('./package.json').deploy || '')"`
 	if [ "$deployscript" = '' ]
 	then
 		old_school_deploy
@@ -131,7 +127,6 @@ deploy(){
 	_exit 0
 }
 
-project=`cat package.json | grep "\"name\": \"" | sed 's/\s*"name": "//g' | sed 's/"//g' | sed 's/,//g' | sed 's/\s//g'`
 commitMessage="${branch}"
 git config user.email "debitoor-bot@debitoor.com" || delete_ready_branch $? "Could not set git email"
 git config user.name "Teamcity" || delete_ready_branch $? "Could not set git user name"
@@ -145,11 +140,11 @@ echo "This will be the author of the merge commit in master: ${LAST_COMMIT_AUTHO
 
 case ${branch} in
 *_no_pull_request)
-  ## If the ready branch ends with "_no_pull_request" we will not try to match to a pull request. This is for merging latest texts
-  step_start "No pull request - Git fetching"
-  PR_NUMBER="none"
-  git fetch --prune || delete_ready_branch $? "Could not git fetch"
-  ;;
+	## If the ready branch ends with "_no_pull_request" we will not try to match to a pull request. This is for merging latest texts
+	step_start "No pull request - Git fetching"
+	PR_NUMBER="none"
+	git fetch --prune || delete_ready_branch $? "Could not git fetch"
+	;;
 *)
 	################################################
 	# Make sure git fetches (hidden) Pull Requests
@@ -192,7 +187,7 @@ case ${branch} in
 
 	MATCHING_PULL_REQUEST=`git show-ref | grep $CURRENT_SHA | grep 'refs/remotes/origin/pullrequest/'`
 	if [ "$MATCHING_PULL_REQUEST" = '' ] ; then
-	  echo "Error finding matching pull request: ${error}" >&2; delete_ready_branch 1 "Could not find matching pull request"
+		echo "Error finding matching pull request: ${error}" >&2; delete_ready_branch 1 "Could not find matching pull request"
 	fi
 	echo "Matching pull request:"
 	echo "${MATCHING_PULL_REQUEST}"
@@ -231,7 +226,7 @@ fi
 
 step_start "Checking out master, resetting (hard), pulling from origin and cleaning"
 
-git checkout master || delete_ready_branch $?  "Could not checkout master"
+git checkout master || delete_ready_branch $? "Could not checkout master"
 git reset --hard origin/master || delete_ready_branch $? "Could not reset to master"
 git pull || delete_ready_branch $? "Could not pull master"
 git clean -fx || delete_ready_branch $? "Could not git clean on master"
@@ -258,7 +253,7 @@ fi
 case ${branch} in
 merge_latest_texts*)
 	step_start "Branch name starts with merge_latest_texts - skipping merging ready branch into master"
-  	;;
+	;;
 *)
 	step_start "Merging ready branch into master, with commit message that closes pull request number ${PR_NUMBER}"
 
