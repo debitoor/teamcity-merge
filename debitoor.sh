@@ -83,9 +83,9 @@ old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
 	if [ "$heroku_project" = '' ]
 	then
-		git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
-	else
 		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
+	else
+		git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
 	fi
 }
 
