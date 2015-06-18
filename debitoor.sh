@@ -76,8 +76,8 @@ _exit (){
 	fi
 }
 
-heroku_project= `node -e "console.log(require('./package.json').heroku || '')"`
-project= `node -e "console.log(require('./package.json').name || '')"`
+heroku_project=`node -e "console.log(require('./package.json').heroku || '')"`
+project=`node -e "console.log(require('./package.json').name || '')"`
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
