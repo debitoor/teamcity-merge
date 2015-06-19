@@ -91,7 +91,7 @@ fi
 # Deploy to production
 ################################################
 heroku_project=`node -e "console.log(require('./package.json').heroku || '')"`
-deployscript=`node -e "console.log(require('./package.json').deploy || '')"`
+deployscript=`node -e "console.log(require('./package.json').scripts.deploy || '')"`
 project=`node -e "console.log(require('./package.json').name || '')"`
 
 old_school_deploy(){

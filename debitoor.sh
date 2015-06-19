@@ -97,7 +97,7 @@ deploy(){
 	step_start "Deploying to production"
 	commitMessage=`git log -1 --pretty=%B`
 	LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
-	deployscript=`node -e "console.log(require('./package.json').deploy || '')"`
+	deployscript=`node -e "console.log(require('./package.json').scripts.deploy || '')"`
 	if [ "$deployscript" = '' ]
 	then
 		old_school_deploy
