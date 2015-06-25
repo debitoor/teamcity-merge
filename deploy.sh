@@ -90,18 +90,13 @@ fi
 ################################################
 # Deploy to production
 ################################################
-heroku_project=`node -e "console.log(require('./package.json').heroku || '')"`
-deployscript=`node -e "console.log(require('./package.json').scripts.deploy || '')"`
 project=`node -e "console.log(require('./package.json').name || '')"`
+heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
+deployscript=`node -e "console.log(require('./package.json').scripts.deploy || '')"`
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
-	if [ "$heroku_project" = '' ]
-	then
-		hms deploy production-services "${project}" --no-log --retry || _exit $? "hms deploy failed"
-	else
-		git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
-	fi
+	git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
 }
 
 step_start "Deploying to production"
