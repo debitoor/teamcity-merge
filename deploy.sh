@@ -121,11 +121,4 @@ datetime=`date +%Y-%m-%d_%H-%M-%S`
 git tag -a "${project}.production.${datetime}" -m "${commitMessage}" || _exit $? "Could not create git tag"
 git push origin --tags || _exit $? "Could not push git tag to GitHub"
 
-################################################
-# Mark deploy on New Relic
-################################################
-
-step_start "Marking deploy on New Relic"
-author=`git log --pretty=format:'%an' -n 1`
-curl -H "x-api-key:${NEW_RELIC_API_KEY}" -d "deployment[app_name]=${project}" -d "deployment[user]=${author}" -d "deployment[description]=${commitMessage}" https://api.newrelic.com/deployments.xml || _exit $? "Could not tag deploy in New Relic"
 _exit 0
