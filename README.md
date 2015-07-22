@@ -11,7 +11,7 @@ The benefits of letting TC handle merges to master are:
 - You will never see a red master build because of a merge to master (tests are run before merging)
 - The developer does not have to close the github pull request manually
 - Attempting to merge a branch that does not correspond to a pull request will be rejected (If the developer forgot to push his/her changes to the github pull request branch)
-- The developer is free to do other things, while the merge is tested and merged. He/she and others, will be notified of success or failure by github emails (watching the repo)
+- The developer is free to do other things, while the merge is tested and merged. He/she and others, will be notified of success or failure in gitter or github emails (watching the repo)
 - This process implements an automatic queue, ensuring that only one merge is done at a time.
 - This process can automatically push your changes to production if all tests are green, if you are running continuous release (optional)
 
