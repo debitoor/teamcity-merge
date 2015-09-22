@@ -35,7 +35,7 @@ gitter(){
 		-H "Accept: application/json" \
 		-H "Authorization: Bearer ${GITTER_TOKEN}" "https://api.gitter.im/v1/rooms/555c7bea15522ed4b3e0ab08/chatMessages" \
 		-d "{\"text\":\"$symbol $1\"}" \
-		-s
+		-s > /dev/null
 }
 
 # Always last thing done after merge (fail or success)
