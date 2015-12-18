@@ -56,7 +56,7 @@ git config user.name "Teamcity" || delete_ready_branch $? "Could not set git use
 
 step_start "Finding author"
 
-LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
+LAST_COMMIT_AUTHOR=$(./getGithubLastAuthor.sh)
 
 echo "This will be the author of the merge commit in master: ${LAST_COMMIT_AUTHOR} (the last commit in branch was done by this person)"
 

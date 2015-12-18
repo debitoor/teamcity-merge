@@ -101,7 +101,7 @@ old_school_deploy(){
 
 step_start "Deploying to production"
 commitMessage=`git log -1 --pretty=%B`
-LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
+LAST_COMMIT_AUTHOR=$(./getGithubLastAuthor.sh)
 if [ "$deployscript" = '' ]
 then
 	old_school_deploy

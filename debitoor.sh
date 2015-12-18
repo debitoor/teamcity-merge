@@ -43,7 +43,7 @@ delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
 	step_end
-	gitterUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	gitterUser=$(./getGithubLastAuthor.sh)
 	if [ "$1" = '0' ]
 	then
 		if [ "$2" != '' ]
@@ -66,7 +66,7 @@ delete_ready_branch (){
 # Always last thing done before exit
 _exit (){
 	step_end
-	gitterUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	gitterUser=$(./getGithubLastAuthor.sh)
 	if [ "$1" = '0' ]
 	then
 		exit
