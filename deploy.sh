@@ -34,7 +34,6 @@ gitter(){
 # Always last thing done before exit
 _exit (){
 	step_end
-	gitterUser=$(./getGithubLastAuthor.sh)
 	if [ "$1" = '0' ]
 	then
 		exit
@@ -98,7 +97,7 @@ old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
 	git push "ssh://git@heroku.com/${heroku_project}.git" HEAD:master --force || _exit $? "heroku deploy failed"
 }
-
+gitterUser=$(`curl –silent -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash`)
 step_start "Deploying to production"
 commitMessage=`git log -1 --pretty=%B`
 LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
