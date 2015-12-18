@@ -34,7 +34,7 @@ gitter(){
 # Always last thing done before exit
 _exit (){
 	step_end
-	gitterUser=`echo "${LAST_COMMIT_AUTHOR}" | sed 's/\s//g'`
+	gitterUser=$(./getGithubLastAuthor.sh)
 	if [ "$1" = '0' ]
 	then
 		exit
@@ -101,7 +101,7 @@ old_school_deploy(){
 
 step_start "Deploying to production"
 commitMessage=`git log -1 --pretty=%B`
-LAST_COMMIT_AUTHOR=$(./getGithubLastAuthor.sh)
+LAST_COMMIT_AUTHOR=`git log --pretty=format:'%an' -n 1`
 if [ "$deployscript" = '' ]
 then
 	old_school_deploy
