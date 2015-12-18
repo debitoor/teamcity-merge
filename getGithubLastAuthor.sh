@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Usage
 # author=$(./getGithubLastAuthor.sh)
-#
+# or
+# author=$(curl –silent -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
+
 
 #Map of emails -> github usernames
 
