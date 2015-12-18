@@ -76,7 +76,7 @@ _exit (){
 
 project=`node -e "console.log(require('./package.json').name || '')"`
 heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
-gitterUser=$(curl –silent -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
+gitterUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
