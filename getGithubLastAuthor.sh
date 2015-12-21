@@ -7,9 +7,6 @@
 
 #Map of emails -> github usernames
 
-
-#developers["[] Dan = '@bifrost';
-
 declare -A developers
 
 developers["eagleeyes91@gmail.com"]="eagleeye"
@@ -22,8 +19,7 @@ developers["jp@jonatanpedersen.com"]="jonatanpedersen"
 developers["ogr@debitoor.com"]="Oligrand";
 developers["ssc@debitoor.com"]="sscdebitoor";
 developers["kollner@gmail.com"]="kollner";
-
-
+developers["dan@steenbjerg.com"]="bifrost";
 
 function getGithubLastAuthor()
 {
