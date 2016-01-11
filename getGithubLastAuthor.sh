@@ -19,7 +19,7 @@ developers["jp@jonatanpedersen.com"]="jonatanpedersen"
 developers["ogr@debitoor.com"]="Oligrand";
 developers["ssc@debitoor.com"]="sscdebitoor";
 developers["kollner@gmail.com"]="kollner";
-developers["dan@steenbjerg.com"]="bifrost";
+developers["dra@debitoor.com"]="bifrost";
 
 function getGithubLastAuthor()
 {
