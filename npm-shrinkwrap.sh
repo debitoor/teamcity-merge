@@ -27,6 +27,7 @@ npm run teamcity --silent || exit $?
 step_start "Run nightly-tests if they exist"
 nightlyTests=`cat package.json | jsonfilter "scripts.nightly-test"`
 if [ "${nightlyTests}" != '' ]
+	echo "Running noightly-tests:${nightlyTests}."
 	npm run nightly-test --silent || exit $?
 then
 	echo "No npm script called nightly-test found"
