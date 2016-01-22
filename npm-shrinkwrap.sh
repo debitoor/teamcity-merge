@@ -25,11 +25,13 @@ step_start "Run tests with npm run teamcity. (This is supposed to do new npm ins
 npm run teamcity --silent || exit $?
 
 step_start "Run nightly-tests if they exist"
-nightlyTests=`cat package.json | jsonfilter "scripts.nightly-test"`
-if [ "${nightlyTests}" != '' ]
-	echo "Running noightly-tests:${nightlyTests}."
-	npm run nightly-test --silent || exit $?
+echo "Fetching nightly-test script form package.json with jsonfilter command"
+nightly=`cat package.json | jsonfilter "scripts.nightly-test"`
+if [ "${nightly}" != '' ]
 then
+	echo "Running nightly-tests:${nightly}."
+	npm run nightly-test --silent || exit $?
+else
 	echo "No npm script called nightly-test found"
 fi
 
