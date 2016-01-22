@@ -36,7 +36,7 @@ else
 fi
 
 step_start "Deploy new npm-shrinkwrap.json"
-datetime=`date +%%Y-%%m-%%d_%%H-%%M-%%S`
+datetime=`date +%Y-%m-%d_%H-%M-%S`
 branch=`echo "update_npm-shrinkwrap.json_${datetime}"`
 git checkout -b "${branch}" || exit $?
 git config user.email "debitoor-bot@debitoor.com" || exit $?
