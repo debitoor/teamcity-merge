@@ -1,13 +1,38 @@
 #!/bin/sh
+### Step helper functions
+stepName=""
+step_end(){
+	echo "##teamcity[blockClosed name='${stepName}']"
+}
+step_start(){
+	if [ "${stepName}" != '' ]
+	then
+		step_end
+	fi
+	stepName=`echo "-- $1 --"`
+	echo "##teamcity[blockOpened name='${stepName}']"
+}
+
+
+
+step_start "Checkout master branch"
 git checkout master || exit $?
 
-### Remove old npm-shrinkwrap.json
+step_start "Remove old npm-shrinkwrap.json"
 rm -f npm-shrinkwrap.json || exit $?
 
-### Run tests. (This is supposed to do new npm install)
+step_start "Run tests with 'npm run teamcity'. (This is supposed to do new npm install)"
 npm run teamcity --silent || exit $?
 
-### Deploy new npm-shrinkwrap.json
+step_start "Run nightly-tests if they exist"
+nightlyTests = `cat package.json | jsonfilter "scripts.nightly-test"`
+if [ "${nightlyTests}" != '' ]
+	npm run nightly-test --silent || exit $?
+then
+	echo "No npm script called nightly-test found"
+fi
+
+step_start "Deploy new npm-shrinkwrap.json"
 datetime=`date +%%Y-%%m-%%d_%%H-%%M-%%S`
 branch=`echo "update_npm-shrinkwrap.json_${datetime}"`
 git checkout -b "${branch}" || exit $?
@@ -19,3 +44,5 @@ git commit -m "update npm-shrinkwrap.json" || exit 0 ### If there are no changes
 git push origin "${branch}:ready/${branch}_no_pull_request" || exit $?
 git checkout master || exit $?
 git branch -D "${branch}"
+
+step_end
