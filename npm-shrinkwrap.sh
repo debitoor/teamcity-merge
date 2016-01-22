@@ -21,11 +21,11 @@ git checkout master || exit $?
 step_start "Remove old npm-shrinkwrap.json"
 rm -f npm-shrinkwrap.json || exit $?
 
-step_start "Run tests with 'npm run teamcity'. (This is supposed to do new npm install)"
+step_start "Run tests with npm run teamcity. (This is supposed to do new npm install)"
 npm run teamcity --silent || exit $?
 
 step_start "Run nightly-tests if they exist"
-nightlyTests = `cat package.json | jsonfilter "scripts.nightly-test"`
+nightlyTests=`cat package.json | jsonfilter "scripts.nightly-test"`
 if [ "${nightlyTests}" != '' ]
 	npm run nightly-test --silent || exit $?
 then
