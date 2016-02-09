@@ -200,6 +200,26 @@ merge_latest_texts*)
 esac
 
 ################################################
+# Check npm version
+################################################
+npmSpecified=`cat package.json | jsonfilter "engines.npm" | sed -e 's/"//g'`
+npmCurrent=`npm --version`
+if [ "${npmSpecified}" != "${npmCurrent}" ]
+then
+	delete_ready_branch 1 "Current npm version is ${npmCurrent}. It does not match the npm version in package.json ${npmSpecified}"
+fi
+
+################################################
+# Check node.js version
+################################################
+nodeSpecified=`cat package.json | jsonfilter "engines.node" | sed -e 's/"//g'`
+nodeCurrent=`node --version | sed -e 's/v//g'`
+if [ "${nodeSpecified}" != "${nodeCurrent}" ]
+then
+	delete_ready_branch 1 "Current node.js version is ${nodeCurrent}. It does not match the node.js version in package.json ${nodeSpecified}"
+fi
+
+################################################
 # Run tests
 ################################################
 
