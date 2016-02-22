@@ -20,6 +20,7 @@ developers["ogr@debitoor.com"]="Oligrand";
 developers["ssc@debitoor.com"]="sscdebitoor";
 developers["kollner@gmail.com"]="kollner";
 developers["dra@debitoor.com"]="bifrost";
+developers["philip.shurpik@gmail.com"]="philipshurpik"
 
 function getGithubLastAuthor()
 {
