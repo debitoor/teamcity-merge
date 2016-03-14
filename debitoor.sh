@@ -19,7 +19,7 @@ step_start(){
 	echo "##teamcity[blockOpened name='${stepName}']"
 }
 
-gitter(){
+slack(){
 	if [ "$2" = 'green' ]
 	then
 		symbol="✅"
@@ -45,16 +45,16 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			gitter "$2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" yellow
-			message=`echo "$2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}"`
+			slack "$2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" yellow
+			message=`echo "$2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}"`
 		else
-			gitter "Success merging ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
-			message=`echo "Success merging ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}"`
+			slack "Success merging ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+			message=`echo "Success merging ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}"`
 			deploy
 		fi
 	else
-		gitter "Failure merging: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" red
-		message=`echo "Failure merging: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}"`
+		slack "Failure merging: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" red
+		message=`echo "Failure merging: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}"`
 	fi
 	echo "\n${message}"
 	exit $1
@@ -67,14 +67,14 @@ _exit (){
 	then
 		exit
 	else
-		gitter "Failure: $2\n${project}\n@${gitterUser}\n${commitMessage}\n${buildUrl}" red
+		slack "Failure: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" red
 		exit $1
 	fi
 }
 
 project=`node -e "console.log(require('./package.json').name || '')"`
 heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
-gitterUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
+slackUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
@@ -96,7 +96,7 @@ deploy(){
 	else
 		npm run deploy || _exit $? "npm run deploy failed"
 	fi
-	gitter "Success deploying ${project}\n@${gitterUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+	slack "Success deploying ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
 
 	################################################
 	# Add git tag and push to GitHub
