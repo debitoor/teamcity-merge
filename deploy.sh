@@ -24,10 +24,9 @@ gitter(){
 	then
 		symbol="❌"
 	fi
-	curl -X POST -i -H "Content-Type: application/json" \
-		-H "Accept: application/json" \
-		-H "Authorization: Bearer ${GITTER_TOKEN}" "https://api.gitter.im/v1/rooms/555c7bea15522ed4b3e0ab08/chatMessages" \
-		-d "{\"text\":\"$symbol $1\"}" \
+	curl -X POST \
+		"https://slack.com/api/chat.postMessage?token=${SLACK_TOKEN}&channel=${SLACK_CHANNEL_ID}" \
+		--data-urlencode "text=$symbol $1" \
 		-s > /dev/null
 }
 
