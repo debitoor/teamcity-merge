@@ -24,9 +24,10 @@ slack(){
 	then
 		symbol="❌"
 	fi
+	text = {$1/\n/%0A}
 	curl -X POST \
 		"https://slack.com/api/chat.postMessage?token=${SLACK_TOKEN}&channel=${SLACK_CHANNEL_ID}" \
-		--data-urlencode "text=$symbol {$1/\n/%0A}" \
+		--data-urlencode "text=$symbol $text" \
 		-s > /dev/null
 }
 
