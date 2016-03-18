@@ -45,18 +45,41 @@ delete_ready_branch (){
 	then
 		if [ "$2" != '' ]
 		then
-			slack "$2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" yellow
-			message=`echo "$2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}"`
+			slack "$2
+${project}
+@${slackUser}
+${commitMessage}
+${buildUrl}" yellow
+			message=`echo "$2
+${project}
+@${slackUser}
+${commitMessage}
+${buildUrl}"`
 		else
-			slack "Success merging ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
-			message=`echo "Success merging ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}"`
+			slack "Success merging ${project}
+@${slackUser}
+${commitMessage}
+${commitUrl}${mergeCommitSha}" green
+			message=`echo "Success merging ${project}
+@${slackUser}
+${commitMessage}
+${commitUrl}${mergeCommitSha}"`
 			deploy
 		fi
 	else
-		slack "Failure merging: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" red
-		message=`echo "Failure merging: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}"`
+		slack "Failure merging: $2
+${project}
+@${slackUser}
+${commitMessage}
+${buildUrl}" red
+		message=`echo "Failure merging: $2
+${project}
+@${slackUser}
+${commitMessage}
+${buildUrl}"`
 	fi
-	echo "\n${message}"
+	echo "
+${message}"
 	exit $1
 }
 
@@ -67,7 +90,11 @@ _exit (){
 	then
 		exit
 	else
-		slack "Failure: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" red
+		slack "Failure: $2
+${project}
+@${slackUser}
+${commitMessage}
+${buildUrl}" red
 		exit $1
 	fi
 }
@@ -96,7 +123,10 @@ deploy(){
 	else
 		npm run deploy || _exit $? "npm run deploy failed"
 	fi
-	slack "Success deploying ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+	slack "Success deploying ${project}
+@${slackUser}
+${commitMessage}
+${commitUrl}${mergeCommitSha}" green
 
 	################################################
 	# Add git tag and push to GitHub
@@ -168,7 +198,9 @@ case ${branch} in
 	echo "${CURRENT_SHA}"
 
 
-	error='\nDid you try to deploy a branch that is not a pull request?\nOr did you forget to push your changes to github?'
+	error='
+Did you try to deploy a branch that is not a pull request?
+Or did you forget to push your changes to github?'
 
 	MATCHING_PULL_REQUEST=`git show-ref | grep $CURRENT_SHA | grep 'refs/remotes/origin/pullrequest/'`
 	if [ "$MATCHING_PULL_REQUEST" = '' ] ; then

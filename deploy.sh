@@ -37,7 +37,11 @@ _exit (){
 	then
 		exit
 	else
-		slack "Deploy failure: $2\n${project}\n@${slackUser}\n${commitMessage}\n${buildUrl}" red
+		slack "Deploy failure: $2
+${project}
+@${slackUser}
+${commitMessage}
+${buildUrl}" red
 		exit $1
 	fi
 }
@@ -106,7 +110,10 @@ then
 else
 	npm run deploy || _exit $? "npm run deploy failed"
 fi
-slack "Success deploying ${project}\n@${slackUser}\n${commitMessage}\n${commitUrl}${mergeCommitSha}" green
+slack "Success deploying ${project}
+@${slackUser}
+${commitMessage}
+${commitUrl}${mergeCommitSha}" green
 
 ################################################
 # Add git tag and push to GitHub
