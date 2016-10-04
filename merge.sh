@@ -158,15 +158,15 @@ git clean -fx || delete_ready_branch $? "Could not git clean on master"
 # Merge latests texts to master branch
 #####################################################################
 
-if [ "$1" = 'texts' ]
-then
-	step_start "Merge latests texts to master branch"
-
-	git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts to master"
-	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json (master)"
-	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json to master"
-	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
-fi
+# if [ "$1" = 'texts' ]
+# then
+# 	step_start "Merge latests texts to master branch"
+# 
+# 	git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts to master"
+# 	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json (master)"
+# 	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json to master"
+# 	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
+# fi
 
 ################################################
 # Merge into master
