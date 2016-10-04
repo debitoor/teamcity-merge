@@ -129,17 +129,17 @@ esac
 # Merge latests texts to ready branch
 #####################################################################
 
-if [ "$1" = 'texts' ]
-then
-	step_start "Merge latests texts to ready branch"
-
-	git fetch origin texts || delete_ready_branch $? "Could not fetch texts branch"
-	git config merge.renamelimit 999999 || delete_ready_branch $? "Could not set git renamelimit"
-	git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts"
-	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json"
-	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json"
-	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
-fi
+#if [ "$1" = 'texts' ]
+#then
+#	step_start "Merge latests to ready branch"
+#
+#	git fetch origin texts || delete_ready_branch $? "Could not fetch texts branch"
+#	git config merge.renamelimit 999999 || delete_ready_branch $? "Could not set git renamelimit"
+#	git merge origin/texts --squash -X theirs || delete_ready_branch $? "Could not merge latest texts"
+#	git checkout source/texts/translations.json --theirs || delete_ready_branch $? "Could not checkout translations.json"
+#	git add source/texts/translations.json || delete_ready_branch $? "Could not git add translations.json"
+#	git commit -m 'merged latest texts' || echo "ignoring nothing to commit, continuing"
+#fi
 
 #####################################################################
 # Checkout master
