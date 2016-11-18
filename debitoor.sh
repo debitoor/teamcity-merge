@@ -176,6 +176,8 @@ case ${branch} in
 		# Avoid -i flag for sed, because of platform differences
 		sed 's/\[remote \"origin\"\]/[remote "origin"]\
 		fetch = +refs\/pull\/*\/head:refs\/remotes\/origin\/pullrequest\/*/g' .git/config >.git/config_with_pull_request
+		cp .git/config .git/config.backup
+		mv .git/config_with_pull_request .git/config
 		echo 'Added fetch of pull request to .git/config:'
 		cat .git/config
 	else
