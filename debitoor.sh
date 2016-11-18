@@ -173,8 +173,9 @@ case ${branch} in
 	CURRENT_FETCH=`grep '	fetch =.\+refs/pull/\*/head:refs/remotes/origin/pullrequest/\*' .git/config`
 	if [ "$CURRENT_FETCH" = '' ]
 	then
-		sed -i 's/\[remote \"origin\"\]/[remote "origin"]\
-		fetch = +refs\/pull\/*\/head:refs\/remotes\/origin\/pullrequest\/*/g' .git/config
+		# Avoid -i flag for sed, because of platform differences
+		sed 's/\[remote \"origin\"\]/[remote "origin"]\
+		fetch = +refs\/pull\/*\/head:refs\/remotes\/origin\/pullrequest\/*/g' .git/config >.git/config_with_pull_request
 		echo 'Added fetch of pull request to .git/config:'
 		cat .git/config
 	else
