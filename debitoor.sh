@@ -100,6 +100,11 @@ ${buildUrl}" red
 }
 
 project=`node -e "console.log(require('./package.json').name || '')"`
+if [ "$project" = 'Debitoor' ]
+then
+	project="debitoor-mobile-next"
+fi
+
 heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
 slackUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
 

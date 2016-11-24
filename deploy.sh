@@ -93,6 +93,10 @@ fi
 # Deploy to production
 ################################################
 project=`node -e "console.log(require('./package.json').name || '')"`
+if [ "$project" = 'Debitoor' ]
+then
+	project="debitoor-mobile-next"
+fi
 heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
 deployscript=`node -e "console.log(require('./package.json').scripts.deploy || '')"`
 
