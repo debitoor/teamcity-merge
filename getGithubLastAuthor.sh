@@ -11,7 +11,7 @@ declare -A developers
 
 developers["eagleeyes91@gmail.com"]="eagleeye"
 developers["a.bubenshchykov@gmail.com"]="bubenshchykov"
-developers["evgen.filatov@gmail.com"]="wtfil"
+developers["lex@debitoor.com"]="lex"
 developers["allan@878.dk"]="ebdrup"
 developers["anton.mamant@gmail.com"]="mamant"
 developers["mpush@inbox.ru"]="mpushkin"
