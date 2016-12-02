@@ -21,6 +21,7 @@ developers["kollner@gmail.com"]="kollner";
 developers["dra@debitoor.com"]="bifrost";
 developers["philip.shurpik@gmail.com"]="philipshurpik"
 developers["eugene.bianov@gmail.com"]="sedan"
+developers["hiller@live.dk"]="hilleer"
 
 function getGithubLastAuthor()
 {
