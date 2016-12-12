@@ -5,7 +5,7 @@
 # author=$(curl –silent -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
 
 
-#Map of emails -> github usernames
+#Map of emails -> slack usernames
 
 declare -A developers
 
@@ -22,7 +22,7 @@ developers["dra@debitoor.com"]="bifrost";
 developers["philip.shurpik@gmail.com"]="philipshurpik"
 developers["eugene.bianov@gmail.com"]="sedan"
 developers["hiller@live.dk"]="hilleer"
-developers["whi@debitoor.com"]="WhitneyWHI"
+developers["whi@debitoor.com"]="whitney"
 
 function getGithubLastAuthor()
 {
