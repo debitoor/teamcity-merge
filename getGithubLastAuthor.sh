@@ -23,6 +23,7 @@ developers["philip.shurpik@gmail.com"]="philipshurpik"
 developers["eugene.bianov@gmail.com"]="sedan"
 developers["hiller@live.dk"]="hilleer"
 developers["whi@debitoor.com"]="whitney"
+developers["ajl@debitoor.com"]="ajleoni"
 
 function getGithubLastAuthor()
 {
