@@ -247,7 +247,6 @@ fi
 
 step_start "Checking out master, resetting (hard), pulling from origin and cleaning"
 
-git checkout master || delete_ready_branch $? "Could not checkout master"
 git reset --hard origin/master || delete_ready_branch $? "Could not reset to master"
 git pull || delete_ready_branch $? "Could not pull master"
 git clean -fx || delete_ready_branch $? "Could not git clean on master"
