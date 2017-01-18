@@ -25,6 +25,10 @@ developers["hiller@live.dk"]="hilleer"
 developers["whi@debitoor.com"]="whitney"
 developers["ajl@debitoor.com"]="ajleoni"
 developers["ayverend@gmail.com"]="dasha"
+developers["ala@debitoor.com"]="AndreaDebitoor"
+developers["hln@debitoor.com"]="HannahHLN"
+developers["leb@debitoor.com"]="lenedebitoor"
+developers["jkl@debitoor.com"]="janklitsgaard"
 
 function getGithubLastAuthor()
 {
