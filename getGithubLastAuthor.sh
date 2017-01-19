@@ -25,12 +25,12 @@ developers["hiller@live.dk"]="hilleer"
 developers["whi@debitoor.com"]="whitney"
 developers["ajl@debitoor.com"]="ajleoni"
 developers["ayverend@gmail.com"]="dasha"
-developers["ala@debitoor.com"]="AndreaDebitoor"
-developers["hln@debitoor.com"]="HannahHLN"
-developers["leb@debitoor.com"]="lenedebitoor"
+developers["ala@debitoor.com"]="andrea"
+developers["hln@debitoor.com"]="hln"
+developers["leb@debitoor.com"]="leb"
 developers["jkl@debitoor.com"]="janklitsgaard"
-developers["asa@debitoor.com"]="alexeydebitoor"
-developers["dph@debitoor.com"]="Dph92"
+developers["asa@debitoor.com"]="alexey"
+developers["dph@debitoor.com"]="vietducpham"
 
 function getGithubLastAuthor()
 {
