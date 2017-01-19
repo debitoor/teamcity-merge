@@ -29,6 +29,8 @@ developers["ala@debitoor.com"]="AndreaDebitoor"
 developers["hln@debitoor.com"]="HannahHLN"
 developers["leb@debitoor.com"]="lenedebitoor"
 developers["jkl@debitoor.com"]="janklitsgaard"
+developers["asa@debitoor.com"]="alexeydebitoor"
+developers["dph@debitoor.com"]="Dph92"
 
 function getGithubLastAuthor()
 {
