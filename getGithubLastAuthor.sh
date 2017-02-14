@@ -31,6 +31,11 @@ developers["leb@debitoor.com"]="leb"
 developers["jkl@debitoor.com"]="janklitsgaard"
 developers["asa@debitoor.com"]="alexey"
 developers["dph@debitoor.com"]="vietducpham"
+developers["sla@debitoor.com"]="sergio"
+developers["chp@debitoor.com"]="charles"
+developers["lco@debitoor.com"]="laura"
+developers[""]="louise"
+developers["lel@debitoor.com"]="jlv"
 
 function getGithubLastAuthor()
 {
