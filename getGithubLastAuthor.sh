@@ -36,6 +36,7 @@ developers["chp@debitoor.com"]="charles"
 developers["lco@debitoor.com"]="laura"
 developers["lel@debitoor.com"]="louise"
 developers["jlv@debitoor.com"]="jlv"
+developers["sophia@debitoor.com"]="sophia"
 
 function getGithubLastAuthor()
 {
