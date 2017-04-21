@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ "$branch" = 'refs/heads/master' ]
 then
 	echo "master branch, doing nothing"
