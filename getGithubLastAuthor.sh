@@ -38,6 +38,7 @@ developers["lco@debitoor.com"]="laura"
 developers["lel@debitoor.com"]="louise"
 developers["jlv@debitoor.com"]="jlv"
 developers["sophia@debitoor.com"]="sophia"
+developers["kar@debitoor.com"]="katerayden"
 
 function getGithubLastAuthor()
 {
