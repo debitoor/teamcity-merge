@@ -72,9 +72,9 @@ ${commitUrl}${mergeCommitSha}"`
 	else
 		if [ "$3" != '' ]
 		then
-			errorOutput=$(echo "```
+			errorOutput="\`\`\`
 $3
-```")
+\`\`\`"
 		else
 			errorOutput=""
 		fi
