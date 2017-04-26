@@ -338,7 +338,7 @@ npm run teamcity 2>&1 1>&5 | tee err.log 1>&2
 
 ## get exit code of "npm run teamcity"
 code="${PIPESTATUS[0]}"
-err=$(cat err.log && rm -f err.log)
+err=$(cat err.log | grep -v '^npm ERR' && rm -f err.log)
 if [ "${code}" != 0 ]
 then
 	delete_ready_branch "${code}" "Failing test(s)
