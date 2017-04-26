@@ -70,16 +70,26 @@ ${commitUrl}${mergeCommitSha}"`
 			deploy
 		fi
 	else
+		if [ "$3" != '' ]
+		then
+			errorLog=$(echo "```
+$3
+```")
+		else
+			errorLog=""
+		fi
 		slack "Failure merging: $2
 ${project}
 @${slackUser}
 ${commitMessage}
-${buildUrl}" red
+${buildUrl}
+${errorLog}" red
 		message=`echo "Failure merging: $2
 ${project}
 @${slackUser}
 ${commitMessage}
-${buildUrl}"`
+${buildUrl}
+${errorLog}"`
 	fi
 	echo "
 ${message}"
@@ -341,8 +351,7 @@ code="${PIPESTATUS[0]}"
 err=$(cat err.log | grep -v '^npm ERR' && rm -f err.log)
 if [ "${code}" != 0 ]
 then
-	delete_ready_branch "${code}" "Failing test(s)
-	${err}"
+	delete_ready_branch "${code}" "Failing test(s)"	"${err}"
 fi
 
 ################################################
