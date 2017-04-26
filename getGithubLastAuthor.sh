@@ -15,6 +15,7 @@ developers["lex@debitoor.com"]="lex"
 developers["allan@878.dk"]="ebdrup"
 developers["anton.mamant@gmail.com"]="mamant"
 developers["mpush@inbox.ru"]="mpushkin"
+developers["mpu@debitoor.com"]="mpushkin"
 developers["jp@jonatanpedersen.com"]="jonatanpedersen"
 developers["ogr@debitoor.com"]="Oligrand";
 developers["kollner@gmail.com"]="kollner";
