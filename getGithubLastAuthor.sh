@@ -42,6 +42,10 @@ function getGithubLastAuthor()
 {
 	author=`git log --pretty=format:'%ae' -n 1`
 	githublogin="${developers[$author]}"
+	if [ "${githublogin}" != '' ]
+	then
+		githublogin="${author} (please add this author here: https://github.com/debitoor/teamcity-merge/blob/master/getGithubLastAuthor.sh)"
+	fi
 	echo $githublogin
 }
 
