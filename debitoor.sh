@@ -72,24 +72,24 @@ ${commitUrl}${mergeCommitSha}"`
 	else
 		if [ "$3" != '' ]
 		then
-			errorLog=$(echo "```
+			errorOutput="```
 $3
-```")
+```"
 		else
-			errorLog=""
+			errorOutput=""
 		fi
 		slack "Failure merging: $2
 ${project}
 @${slackUser}
 ${commitMessage}
 ${buildUrl}
-${errorLog}" red
+${errorOutput}" red
 		message=`echo "Failure merging: $2
 ${project}
 @${slackUser}
 ${commitMessage}
 ${buildUrl}
-${errorLog}"`
+${errorOutput}"`
 	fi
 	echo "
 ${message}"
@@ -348,7 +348,7 @@ npm run teamcity 2>&1 1>&5 | tee err.log 1>&2
 
 ## get exit code of "npm run teamcity"
 code="${PIPESTATUS[0]}"
-err=$(cat err.log | grep -v '^npm ERR' && rm -f err.log)
+err=$(cat err.log | grep -vE '^npm (ERR|WARN)' && rm -f err.log)
 if [ "${code}" != 0 ]
 then
 	delete_ready_branch "${code}" "Failing test(s)"	"${err}"
