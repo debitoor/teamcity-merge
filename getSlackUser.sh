@@ -36,7 +36,7 @@ function getSlackUser()
 		then
 			echo "${slackUser}|${email} (could not find this slack-username or email in slack?! Fix it here: https://github.com/debitoor/teamcity-merge/blob/master/getSlackUser.sh)"
 		else
-			echo "<${slackUserId}|${slackUser}>"
+			echo "<@${slackUserId}|${slackUser}>"
 		fi
 	fi
 }
