@@ -77,7 +77,7 @@ ${commitMessage}"`
 			slackUser="${slackUser}${websiteFailNotification}"
 		fi
 		slack "Failure merging: $2 ${project} ${slackUser}
-(<${buildUrl}|build>) ${commitMessage}" red $3
+(<${buildUrl}|build>) ${commitMessage}" red "$3"
 		message=`echo "Failure merging: $2
 ${project}
 ${slackUser}
