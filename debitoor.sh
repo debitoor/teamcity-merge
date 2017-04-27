@@ -40,6 +40,11 @@ slack(){
 		"https://slack.com/api/chat.postMessage?token=${SLACK_TOKEN}&channel=${SLACK_CHANNEL_ID}" \
 		--data-urlencode "text=$symbol $1" \
 		-s > /dev/null
+	if [ "$3" != '' ]
+	then
+		curl -X POST "https://slack.com/api/files.upload?token=${SLACK_TOKEN}&filetype=text&filename=${project}.txt&channels=${SLACK_CHANNEL_ID}" -s \
+			--data-urlencode "content=$3"
+	fi
 }
 
 # Always last thing done after merge (fail or success)
@@ -73,14 +78,6 @@ ${commitUrl}${mergeCommitSha}"`
 			deploy
 		fi
 	else
-		if [ "$3" != '' ]
-		then
-			errorOutput="\`\`\`
-$3
-\`\`\`"
-		else
-			errorOutput=""
-		fi
 		if [ "${project}" = 'debitoor-website-next' ]
 		then
 			slackUser="${slackUser}${websiteFailNotification}"
@@ -89,14 +86,13 @@ $3
 ${project}
 ${slackUser}
 ${commitMessage}
-${buildUrl}
-${errorOutput}" red
+${buildUrl}" red $3
 		message=`echo "Failure merging: $2
 ${project}
 ${slackUser}
 ${commitMessage}
 ${buildUrl}
-${errorOutput}"`
+$3"`
 	fi
 	echo "
 ${message}"
