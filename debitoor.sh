@@ -132,10 +132,8 @@ deploy(){
 	else
 		npm run deploy || _exit $? "npm run deploy failed"
 	fi
-	slack "Success deploying ${project}
-${slackUser}
-${commitMessage}
-${commitUrl}${mergeCommitSha}" green
+	slack "Success deploying ${project} ${slackUser}
+(<${commitUrl}${mergeCommitSha}|commit>) ${commitMessage}" green
 
 	################################################
 	# Add git tag and push to GitHub
