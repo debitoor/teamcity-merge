@@ -57,14 +57,14 @@ delete_ready_branch (){
 		if [ "$2" != '' ]
 		then
 			slack "$2 ${project} ${slackUser}
-(<${buildUrl}|build>) ${commitMessage}" yellow
+${commitMessage} - <${buildUrl}|view build log> " yellow
 			message=`echo "$2
 ${project} ${slackUser}
 ${buildUrl}
 ${commitMessage}"`
 		else
 			slack "Success merging ${project} ${slackUser}
-(<${commitUrl}${mergeCommitSha}|commit>) ${commitMessage}" green
+${commitMessage} - <${commitUrl}${mergeCommitSha}|view commit> " green
 			message=`echo "Success merging ${project}
 ${slackUser}
 ${commitUrl}${mergeCommitSha}
@@ -77,7 +77,7 @@ ${commitMessage}"`
 			slackUser="${slackUser}${websiteFailNotification}"
 		fi
 		slack "Failure merging: $2 ${project} ${slackUser}
-(<${buildUrl}|build>) ${commitMessage}" red "$3"
+${commitMessage} - <${buildUrl}|view build log> " red "$3"
 		message=`echo "Failure merging: $2
 ${project}
 ${slackUser}
@@ -98,7 +98,7 @@ _exit (){
 		exit
 	else
 		slack "Failure: $2 ${project} ${slackUser}
-(<${buildUrl}|build>) ${commitMessage}" red
+${commitMessage} - <${buildUrl}|view build log> " red
 		exit $1
 	fi
 }
@@ -133,7 +133,7 @@ deploy(){
 		npm run deploy || _exit $? "npm run deploy failed"
 	fi
 	slack "Success deploying ${project} ${slackUser}
-(<${commitUrl}${mergeCommitSha}|commit>) ${commitMessage}" green
+${commitMessage} - <${commitUrl}${mergeCommitSha}|view commit> " green
 
 	################################################
 	# Add git tag and push to GitHub
