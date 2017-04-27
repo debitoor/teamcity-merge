@@ -2,7 +2,7 @@
 Script for TeamCity - Lets TeamCity handle merging to master and closing github pull request
 
 # What is this for?
-The script `merge.sh` is for use in a TC commandline build step. Se below for technical details.
+The script `debitoor.sh` is for use in a TC commandline build step. Se below for technical details.
 
 It is used for letting TC handle merging your pull requests to master and closing the pull request.
 The merge will only be done if your tests are green.
@@ -48,7 +48,7 @@ The following sections describes the setting you need on your merge-TC build.
 
 ## Build steps
 
-You just need one build step. In this build step you add a command-line build step, where you run the `merge.sh` script
+You just need one build step. In this build step you add a command-line build step, where you run the `debitoor.sh` script
 
 
 ## Triggers -> Add new trigger rule

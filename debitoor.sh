@@ -50,21 +50,21 @@ delete_ready_branch (){
 		then
 			slack "$2
 ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${buildUrl}" yellow
 			message=`echo "$2
 ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${buildUrl}"`
 		else
 			slack "Success merging ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${commitUrl}${mergeCommitSha}" green
 			message=`echo "Success merging ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${commitUrl}${mergeCommitSha}"`
 			deploy
@@ -80,13 +80,13 @@ $3
 		fi
 		slack "Failure merging: $2
 ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${buildUrl}
 ${errorOutput}" red
 		message=`echo "Failure merging: $2
 ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${buildUrl}
 ${errorOutput}"`
@@ -105,7 +105,7 @@ _exit (){
 	else
 		slack "Failure: $2
 ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${buildUrl}" red
 		exit $1
@@ -119,7 +119,7 @@ then
 fi
 
 heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
-slackUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getGithubLastAuthor.sh' | bash)
+slackUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getSlackUser.sh' | bash)
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
@@ -142,7 +142,7 @@ deploy(){
 		npm run deploy || _exit $? "npm run deploy failed"
 	fi
 	slack "Success deploying ${project}
-@${slackUser}
+${slackUser}
 ${commitMessage}
 ${commitUrl}${mergeCommitSha}" green
 
