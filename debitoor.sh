@@ -97,11 +97,8 @@ _exit (){
 	then
 		exit
 	else
-		slack "Failure: $2
-${project}
-${slackUser}
-${commitMessage}
-${buildUrl}" red
+		slack "Failure: $2 ${project} ${slackUser}
+<${buildUrl}|build> ${commitMessage}" red
 		exit $1
 	fi
 }
