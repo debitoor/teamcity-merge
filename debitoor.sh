@@ -8,6 +8,9 @@ then
 	exit 0
 fi
 
+### Extra mentions for when website build fails
+websiteFailNotification=", <@T04TASR2E|hilleer>"
+
 ### Step helper functions
 stepName=""
 step_end(){
@@ -77,6 +80,10 @@ $3
 \`\`\`"
 		else
 			errorOutput=""
+		fi
+		if [ "" = 'debitoor-website-next' ]
+		then
+			slackUser="${slackUser}${websiteFailNotification}"
 		fi
 		slack "Failure merging: $2
 ${project}
