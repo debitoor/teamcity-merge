@@ -57,14 +57,14 @@ delete_ready_branch (){
 		if [ "$2" != '' ]
 		then
 			slack "$2 ${project} ${slackUser}
-<${buildUrl}|build> ${commitMessage}" yellow
+(<${buildUrl}|build>) ${commitMessage}" yellow
 			message=`echo "$2
 ${project} ${slackUser}
 ${buildUrl}
 ${commitMessage}"`
 		else
 			slack "Success merging ${project} ${slackUser}
-<${commitUrl}${mergeCommitSha}|commit> ${commitMessage}" green
+(<${commitUrl}${mergeCommitSha}|commit>) ${commitMessage}" green
 			message=`echo "Success merging ${project}
 ${slackUser}
 ${commitUrl}${mergeCommitSha}
@@ -77,7 +77,7 @@ ${commitMessage}"`
 			slackUser="${slackUser}${websiteFailNotification}"
 		fi
 		slack "Failure merging: $2 ${project} ${slackUser}
-<${buildUrl}|build> ${commitMessage}" red $3
+(<${buildUrl}|build>) ${commitMessage}" red $3
 		message=`echo "Failure merging: $2
 ${project}
 ${slackUser}
@@ -98,7 +98,7 @@ _exit (){
 		exit
 	else
 		slack "Failure: $2 ${project} ${slackUser}
-<${buildUrl}|build> ${commitMessage}" red
+(<${buildUrl}|build>) ${commitMessage}" red
 		exit $1
 	fi
 }
