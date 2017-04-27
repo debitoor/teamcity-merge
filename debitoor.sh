@@ -9,7 +9,7 @@ then
 fi
 
 ### Extra mentions for when website build fails
-websiteFailNotification=", <@T04TASR2E|hilleer>"
+websiteFailNotification=", <@U1NH829L1|hilleer>"
 
 ### Step helper functions
 stepName=""
