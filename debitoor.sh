@@ -43,7 +43,7 @@ slack(){
 	if [ "$3" != '' ]
 	then
 		curl -X POST "https://slack.com/api/files.upload?token=${SLACK_TOKEN}&filetype=text&filename=${project}.txt&channels=${SLACK_CHANNEL_ID}" -s \
-			--data-urlencode "content=$3"
+			-F content="$3"
 	fi
 }
 
