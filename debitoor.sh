@@ -81,7 +81,7 @@ $3
 		else
 			errorOutput=""
 		fi
-		if [ "" = 'debitoor-website-next' ]
+		if [ "${project}" = 'debitoor-website-next' ]
 		then
 			slackUser="${slackUser}${websiteFailNotification}"
 		fi
