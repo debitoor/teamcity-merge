@@ -84,8 +84,8 @@ $3"`
 	fi
 	echo "
 ${message}"
-	exit $1
 	step_end
+	exit $1
 }
 
 # Always last thing done before exit
