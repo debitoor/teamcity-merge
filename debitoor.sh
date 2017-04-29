@@ -42,6 +42,7 @@ slack(){
 		-s > /dev/null
 	if [ "$3" != '' ]
 	then
+		step_start "Post error log to slack"
 		curl -X POST "https://slack.com/api/files.upload?token=${SLACK_TOKEN}&filetype=text&filename=${project}.txt&channels=${SLACK_CHANNEL_ID}" -s \
 			-F content="$3"
 	fi
@@ -51,7 +52,7 @@ slack(){
 delete_ready_branch (){
 	step_start "Deleting ready branch on github"
 	git push origin ":ready/${branch}"
-	step_end
+	step_start "Post to slack"
 	if [ "$1" = '0' ]
 	then
 		if [ "$2" != '' ]
@@ -79,15 +80,12 @@ ${commitMessage}"`
 		slack "Failure merging: $2 ${project} ${slackUser}
 ${commitMessage} - <${buildUrl}|view build log> " red "$3"
 		message=`echo "Failure merging: $2
-${project}
-${slackUser}
-${commitMessage}
-${buildUrl}
 $3"`
 	fi
 	echo "
 ${message}"
 	exit $1
+	step_end
 }
 
 # Always last thing done before exit
