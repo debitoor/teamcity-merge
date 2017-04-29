@@ -80,6 +80,9 @@ ${commitMessage}"`
 		slack "Failure merging: $2 ${project} ${slackUser}
 ${commitMessage} - <${buildUrl}|view build log> " red "$3"
 		message=`echo "Failure merging: $2
+${project} ${slackUser}
+${buildUrl}
+${commitMessage}
 $3"`
 	fi
 	step_end
