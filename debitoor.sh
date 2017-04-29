@@ -82,9 +82,9 @@ ${commitMessage} - <${buildUrl}|view build log> " red "$3"
 		message=`echo "Failure merging: $2
 $3"`
 	fi
+	step_end
 	echo "
 ${message}"
-	step_end
 	exit $1
 }
 
