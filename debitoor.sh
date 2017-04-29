@@ -337,7 +337,17 @@ npm run teamcity 2>&1 1>&5 | tee err.log 1>&2
 
 ## get exit code of "npm run teamcity"
 code="${PIPESTATUS[0]}"
-err=$(cat err.log | grep -vE '^npm (ERR|WARN)' | sed "s/\|n/\\"$'\n'"/g" && rm -f err.log)
+err=`node -e "
+const fs = require('fs');
+const path = require('path');
+let log = fs.readFileSync(path.join(__dirname, 'err.log'), 'utf-8')
+	.split('\n')
+	.filter(line => !/^npm (ERR|WARN)/.test(line))
+	.join('')
+	.replace(/\|n/g, '\n');
+console.log(log);
+" && rm -f err.log`
+
 if [ "${code}" != 0 ]
 then
 	delete_ready_branch "${code}" "Failing test(s)"	"${err}"
