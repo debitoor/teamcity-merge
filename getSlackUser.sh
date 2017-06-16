@@ -19,7 +19,8 @@ getSlackName(){
 	'hiller@live.dk': 'hilleer',
 	'ayverend@gmail.com': 'dasha',
 	'alexeymalyarov@gmail.com': 'lex',
-	'mfbeast@mail.ru': 'mpushkin'
+	'mfbeast@mail.ru': 'mpushkin',
+	'niklasgundlev@gmail.com': 'niklas'
 	}['$1']||'')"`
 }
 
