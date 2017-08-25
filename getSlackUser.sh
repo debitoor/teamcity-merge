@@ -21,7 +21,7 @@ getSlackName(){
 	'alexeymalyarov@gmail.com': 'lex',
 	'mfbeast@mail.ru': 'mpushkin',
 	'niklasgundlev@gmail.com': 'niklas',
-	'marcentusch@hotmail.com': 'Marc',
+	'marcentusch@hotmail.com': 'moe',
 	'dgulkovskiy@gmail.com': 'dima'
 	}['$1']||'')"`
 }
