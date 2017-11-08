@@ -239,6 +239,7 @@ then
 	step_start "Updates texts in ready branch"
 	npm run update-texts || echo "No update-texts NPM script"
 	git add package.json
+	git add package-lock.json	
 	git commit -m "updates texts" || echo "No new texts"
 fi
 
