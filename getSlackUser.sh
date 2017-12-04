@@ -14,7 +14,6 @@ getSlackName(){
 	'mpush@inbox.ru': 'mpushkin',
 	'jp@jonatanpedersen.com': 'jonatanpedersen',
 	'kollner@gmail.com': 'kollner',
-	'philip.shurpik@gmail.com': 'philipshurpik',
 	'eugene.bianov@gmail.com': 'sedan',
 	'hiller@live.dk': 'hilleer',
 	'ayverend@gmail.com': 'dasha',
