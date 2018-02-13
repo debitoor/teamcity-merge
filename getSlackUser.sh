@@ -9,12 +9,11 @@
 getSlackName(){
 	echo `node -e "console.log({
 	'eagleeyes91@gmail.com': 'eagleeye',
-	'allan@878.dk': 'ebdrup',
+	'bogdan.bele@yahoo.com': 'bogdanbele',
 	'anton.mamant@gmail.com': 'mamant',
 	'mpush@inbox.ru': 'mpushkin',
 	'jp@jonatanpedersen.com': 'jonatanpedersen',
 	'kollner@gmail.com': 'kollner',
-	'eugene.bianov@gmail.com': 'sedan',
 	'hiller@live.dk': 'hilleer',
 	'ayverend@gmail.com': 'dasha',
 	'alexeymalyarov@gmail.com': 'lex',
