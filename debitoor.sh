@@ -111,7 +111,7 @@ then
 fi
 
 heroku_project=`node -e "console.log(require('./package.json').heroku || require('./package.json').name)"`
-slackUser=$(curl –s -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getSlackUser.sh' | bash)
+slackUser=$(curl -L 'https://raw.githubusercontent.com/debitoor/teamcity-merge/master/getSlackUser.js' | node)
 
 old_school_deploy(){
 	echo "WARNING: package.json has no deploy run-script. Using old school deploy. Please specify a script for npm run deploy"
