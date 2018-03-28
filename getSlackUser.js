@@ -11,7 +11,7 @@ assert(process.env.SLACK_TOKEN, 'process.env.SLACK_TOKEN should be specified');
 //Map of emails -> slack user name
 const emailsMap = {
 	'eagleeyes91@gmail.com': 'eagleeye',
-	'bogdan.bele@yahoo.com': 'bogdanbele',
+	'bogdan.bele@yahoo.com': 'bogdan',
 	'anton.mamant@gmail.com': 'mamant',
 	'mpush@inbox.ru': 'mpushkin',
 	'jp@jonatanpedersen.com': 'jonatanpedersen',
