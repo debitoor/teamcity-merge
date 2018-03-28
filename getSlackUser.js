@@ -20,7 +20,6 @@ const emailsMap = {
 	'alexeymalyarov@gmail.com': 'lex',
 	'mfbeast@mail.ru': 'mpushkin',
 	'niklasgundlev@gmail.com': 'niklas',
-	'marcentusch@hotmail.com': 'moe',
 	'dgulkovskiy@gmail.com': 'dima',
 	'zygimantas.butas@gmail.com': 'ashtrus'
 };
