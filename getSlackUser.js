@@ -23,7 +23,8 @@ const emailsMap = {
 	'dgulkovskiy@gmail.com': 'dima',
 	'zygimantas.butas@gmail.com': 'zygi',
 	'stepan.te.ua@gmail.com': 'stepan',
-	'arelstone@gmail.com': 'cd'
+	'arelstone@gmail.com': 'cd',
+	'rasmusknap@gmail.com' : 'rasmus'
 };
 
 const email = execSync('git log --pretty=format:\'%ae\' -n 1', {encoding: 'utf-8'});
