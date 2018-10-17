@@ -45,4 +45,4 @@ if(!user) {
 	console.log(`${slackUser}|${email} (could not find this slack-username or email in slack?! Fix it here: https://github.com/debitoor/teamcity-merge/blob/master/getSlackUser.js)`);
 	process.exit(0);
 }
-console.log(`<@${user.id}|${slackUser}>`);
+console.log(`<@${user.id}>`);
