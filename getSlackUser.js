@@ -25,7 +25,6 @@ const emailsMap = {
 	'stepan.te.ua@gmail.com': 'stepan',
 	'arelstone@gmail.com': 'cd',
 	'rasmusknap@gmail.com' : 'rasmus',
-	'this.is.ftm@gmail.com' : 'katsanva',
 	'bgeraymovich@gmail.com' : 'bogdan407',
 };
 
