@@ -8,8 +8,8 @@ then
 	exit 0
 fi
 
-### Extra mentions for when website build fails
-websiteFailNotification=", <@U0U67QDRB|leb>, <@U0W6GEDR7|whitney>"
+### Extra mentions for when website build fails. Is the user's slack "id".
+websiteFailNotification=", <@U0U67QDRB>, <@U0W6GEDR7>"
 
 ### Step helper functions
 stepName=""
