@@ -10,8 +10,6 @@ assert(process.env.SLACK_TOKEN, 'process.env.SLACK_TOKEN should be specified');
 
 //Map of emails -> slack user name
 const emailsMap = {
-	'eagleeyes91@gmail.com': 'eagleeye',
-	'bogdan.bele@yahoo.com': 'bogdan',
 	'anton.mamant@gmail.com': 'mamant',
 	'mpush@inbox.ru': 'mpushkin',
 	'jp@jonatanpedersen.com': 'jonatanpedersen',
@@ -26,6 +24,7 @@ const emailsMap = {
 	'arelstone@gmail.com': 'cd',
 	'rasmusknap@gmail.com' : 'rasmus',
 	'bgeraymovich@gmail.com' : 'bogdan407',
+	'dsm@debitoor.com': 'denise'
 };
 
 const email = execSync('git log --pretty=format:\'%ae\' -n 1', {encoding: 'utf-8'});
