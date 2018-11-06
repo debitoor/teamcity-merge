@@ -9,7 +9,8 @@ then
 fi
 
 ### Extra mentions for when website build fails
-websiteFailNotification=", <@U0U67QDRB|leb>, <@U0W6GEDR7|whitney>"
+### Lene's and Whitney's slack user id's
+websiteFailNotification=", <@U0U67QDRB>, <@U0W6GEDR7>"
 
 ### Step helper functions
 stepName=""
