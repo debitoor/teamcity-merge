@@ -8,7 +8,7 @@ const assert = require('assert');
 
 assert(process.env.SLACK_TOKEN, 'process.env.SLACK_TOKEN should be specified');
 
-//Map of emails -> slack user name
+//Map of emails -> slack username (do POST request to slack with token, to get exact username)
 const emailsMap = {
 	'anton.mamant@gmail.com': 'mamant',
 	'mpush@inbox.ru': 'mpushkin',
@@ -24,7 +24,7 @@ const emailsMap = {
 	'arelstone@gmail.com': 'cd',
 	'rasmusknap@gmail.com' : 'rasmus',
 	'bgeraymovich@gmail.com' : 'bogdan407',
-	'denisetan@live.nl': 'denise',
+	'denisetan@live.nl': 'dsm',
 	'hleote@gmail.com': 'hugo'
 };
 
