@@ -10,7 +10,7 @@ fi
 
 ### Extra mentions for when website build fails
 ### Lene's and Whitney's slack user id's
-websiteFailNotification=", <@U0U67QDRB>, <@U0W6GEDR7>"
+websiteFailNotification=", <@U0W6GEDR7>, <@UKP4C6206>"
 
 ### Step helper functions
 stepName=""
