@@ -18,13 +18,14 @@ const emailsMap = {
 	'mfbeast@mail.ru': 'mpushkin',
 	'niklasgundlev@gmail.com': 'niklas',
 	'dgulkovskiy@gmail.com': 'dima',
-	'zygimantas.butas@gmail.com': 'zygi',
+	'zygimantas.butas@gmail.com': 'ashtrus',
 	'stepan.te.ua@gmail.com': 'stepan',
 	'rasmusknap@gmail.com' : 'rasmus',
 	'bgeraymovich@gmail.com' : 'bogdan407',
 	'denisetan@live.nl': 'dsm',
 	'hleote@gmail.com': 'hugo',
-	'gordunleonid@gmail.com': 'leo'
+	'gordunleonid@gmail.com': 'leo',
+	'ea_bederrar@esi.dz': 'allaeddine'
 };
 
 const email = execSync('git log --pretty=format:\'%ae\' -n 1', {encoding: 'utf-8'});
