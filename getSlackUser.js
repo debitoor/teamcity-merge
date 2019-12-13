@@ -18,7 +18,7 @@ const emailsMap = {
 	'mfbeast@mail.ru': 'mpushkin',
 	'niklasgundlev@gmail.com': 'niklas',
 	'dgulkovskiy@gmail.com': 'dima',
-	'zygimantas.butas@gmail.com': 'ashtrus',
+	'zygimantas.butas@gmail.com': 'zygi',
 	'stepan.te.ua@gmail.com': 'stepan',
 	'rasmusknap@gmail.com' : 'rasmus',
 	'bgeraymovich@gmail.com' : 'bogdan407',
